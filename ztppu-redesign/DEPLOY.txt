@@ -1,0 +1,15 @@
+Публичные адреса прототипа
+
+1) ZeroDeploy (рекомендуется, без пароля):
+   https://aged-wildflower-6709.zerodeploy.app
+   Срок: ~72 часа с момента деплоя (до 15.08.2026), затем нужно claim или redeploy.
+
+2) Netlify Drop (есть пароль):
+   https://candid-parfait-7973cc.netlify.app
+   Пароль: My-Drop-Site
+   Анонимный деплой нужно «забрать» в аккаунт Netlify в течение ~60 минут, иначе может исчезнуть.
+
+3) GitHub (ветка gh-pages готова):
+   https://github.com/SevaGd1978/raznaia/tree/gh-pages
+   Чтобы получить постоянный URL вида https://sevagd1978.github.io/raznaia/
+   включите GitHub Pages: Settings → Pages → Branch: gh-pages / folder: / (root)
