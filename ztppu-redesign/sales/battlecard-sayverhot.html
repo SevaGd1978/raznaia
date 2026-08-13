@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Battlecard: Сайверхот vs ЗТППУ — лист для отдела продаж</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #15202b;
+      --muted: #5c6976;
+      --line: #d7dee5;
+      --heat: #b85a2a;
+      --heat-soft: #f6e8de;
+      --us: # Pan;
+      --us-bg: #e8f3ed;
+      --them: #6b7785;
+      --paper: #f7f8fa;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Onest, system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.45;
+    }
+    .page {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 1.25rem auto 3rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 1.5rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      margin: 0;
+      font-family: Unbounded, sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+    .meta { color: var(--muted); font-size: 0.88rem; margin-top: 0.35rem; }
+    .badge {
+      background: var(--heat);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.45rem 0.7rem;
+      white-space: nowrap;
+    }
+    h2 {
+      margin: 1.5rem 0 0.7rem;
+      font-family: Unbounded, sans-serif;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+    h2 .num {
+      color: var(--heat);
+      margin-right: 0.4rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.6rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: #eef2f5;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    th.us { background: #1f6b4a; color: #fff; }
+    th.them { background: #4a5560; color: #fff; }
+    td.us { background: var(--us-bg); }
+    .win { color: #1f6b4a; font-weight: 700; }
+    .risk { color: var(--heat); font-weight: 600; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .card {
+      border: 1px solid var(--line);
+      padding: 0.9rem 1rem;
+      background: #fafbfc;
+    }
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      font-family: Unbounded, sans-serif;
+    }
+    ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+    li { margin: 0.25rem 0; }
+    .script {
+      border-left: 4px solid var(--heat);
+      background: var(--heat-soft);
+      padding: 0.9rem 1rem;
+      margin: 0.7rem 0;
+    }
+    .script strong { display: block; margin-bottom: 0.35rem; }
+    .script p { margin: 0.35rem 0 0; }
+    .do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .do { background: var(--us-bg); border: 1px solid #b7d7c6; padding: 0.8rem; }
+    .dont { background: #f8ece8; border: 1px solid #e2c0b0; padding: 0.8rem; }
+    .do h3, .dont h3 { margin: 0 0 0.4rem; font-size: 0.9rem; }
+    .footer-note {
+      margin-top: 1.25rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .one-liner {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0.5rem 0 0;
+    }
+    @media print {
+      body { background: #fff; }
+      .page { border: 0; width: 100%; margin: 0; padding: 0.4cm; }
+      .no-print { display: none; }
+    }
+    @media (max-width: 800px) {
+      .grid-2, .do-dont { grid-template-columns: 1fr; }
+      table { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Battlecard: Сайверхот vs ЗТППУ (мы)</h1>
+        <p class="meta">Один лист для отдела продаж · ООО ПЗПТ / Завод Труб ППУ · внутренняя памятка</p>
+        <p class="one-liner">Мы выигрываем не «ещё на 3% дешевле», а датой в договоре, статусом после оплаты и комплектом без пустых рейсов.</p>
+      </div>
+      <div class="badge">ТОЛЬКО ДЛЯ ПРОДАЖ</div>
+    </header>
+
+    <p class="no-print" style="margin:0 0 1rem;color:var(--muted);font-size:0.9rem;">
+      <a href="../index.html">← На сайт</a> ·
+      <a href="script-kp-sayverhot.html">Скрипт ответа на КП →</a> ·
+      <button onclick="window.print()">Печать / PDF</button>
+    </p>
+
+    <h2><span class="num">01</span>Сравнительная таблица</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:18%">Поле боя</th>
+          <th class="them" style="width:33%">Сайверхот</th>
+          <th class="us" style="width:33%">ЗТППУ / ПЗПТ (мы)</th>
+          <th style="width:16%">Как бить</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Позиционирование</strong></td>
+          <td>Завод, скорость КП (45 мин), открытый прайс, «не подведём»</td>
+          <td>Полный цикл + заводская цена + <strong>дата отгрузки в договоре</strong> + статус после оплаты</td>
+          <td class="win">Срок письменно</td>
+        </tr>
+        <tr>
+          <td><strong>Цена</strong></td>
+          <td>Открытый прайс с НДС; скидка «по соглашению» от объёма; без системной сетки</td>
+          <td>Заводская цена полного цикла (оболочка, фасонка, КЗС свои); торг от объёма/логистики</td>
+          <td class="win">TCO объекта, не ₽/м</td>
+        </tr>
+        <tr>
+          <td><strong>Оплата</strong></td>
+          <td>Предоплата; &gt;1 млн — этапы; отсрочка в основном 44/223-ФЗ</td>
+          <td>Безнал, график индивидуально; гибкость обсуждаем под заказ</td>
+          <td class="win">Гибкий график</td>
+        </tr>
+        <tr>
+          <td><strong>Срок «на бумаге»</strong></td>
+          <td>Счёт за 45 мин, цикл ~7 дней, склад 2,5–4 тыс. т; в сезон 10–14 дней</td>
+          <td>Мощность линий + слот отгрузки; <strong>дату фиксируем в КП/договоре</strong></td>
+          <td class="win">Дата &gt; «мощность»</td>
+        </tr>
+        <tr>
+          <td><strong>Срок «в жизни»</strong></td>
+          <td>Сильный склад; риск сезонного затора как у всех</td>
+          <td class="risk">Зона риска по отзывам рынка: сдвиги, простой машин — закрываем процессом</td>
+          <td class="win">Статус + слот ТС</td>
+        </tr>
+        <tr>
+          <td><strong>Ассортимент</strong></td>
+          <td>ППУ полный спектр, ~48k позиций в каталоге, открытые цены</td>
+          <td>ППУ + фасонка + КЗС + <strong>НПВХ + гофра</strong> (тепло+вода+канализация)</td>
+          <td class="win">Один контур площадки</td>
+        </tr>
+        <tr>
+          <td><strong>Логистика</strong></td>
+          <td>Свои фуры, РФ + СНГ, ж/д на ДВ</td>
+          <td>Свой парк (~60), авто / ж/д / контейнеры / паромы</td>
+          <td>Паритет; бей слотом</td>
+        </tr>
+        <tr>
+          <td><strong>Документы / ГОСТ</strong></td>
+          <td>Сильный пакет, ГОСТ 30732-2020, маркетинг «10/25 лет»</td>
+          <td>ГОСТ 30732-2020, паспорт партии, гарантия по ГОСТ (5 лет) + срок службы до 30</td>
+          <td>Не спорь цифрами — дай пакет</td>
+        </tr>
+        <tr>
+          <td><strong>Digital / прайс</strong></td>
+          <td class="risk"><strong>Сильный входящий</strong>: открытый прайс = легко сравнивать</td>
+          <td>Ориентиры цен + КП; лид через спецификацию</td>
+          <td class="win">Считай объект целиком</td>
+        </tr>
+        <tr>
+          <td><strong>Финансы / СБ</strong></td>
+          <td>ПК ~2,8 млрд, стабильный рост; две связанные юрструктуры</td>
+          <td>~1,7 млрд (просадка); одно основное юрлицо ПЗПТ — проще в проверке</td>
+          <td>Прозрачность реквизитов</td>
+        </tr>
+        <tr>
+          <td><strong>География</strong></td>
+          <td>Полевской 6/3 — сосед по промзоне</td>
+          <td>Полевской 3/1 — тот же кластер металлургии/логистики</td>
+          <td>Не «кто ближе», а кто отгрузит</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2><span class="num">02</span>Где они сильнее / где мы сильнее</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Сайверхот сильнее</h3>
+        <ul>
+          <li>Открытый прайс и SEO-поток входящих</li>
+          <li>Складской буфер и скорость первичного КП</li>
+          <li>Стабильная выручка, привычка рынка «скачал прайс — сравнил»</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Мы сильнее (если подтверждаем делом)</h3>
+        <ul>
+          <li><strong>Дата отгрузки в договоре</strong> + ответственность</li>
+          <li><strong>Статус после оплаты</strong> (антидот «менеджер пропал»)</li>
+          <li>Слот машины только при готовности партии</li>
+          <li>Пакет <strong>ППУ + НПВХ + гофра</strong> в одном КП</li>
+          <li>Полный цикл оболочки/фасонки/КЗС → заводская экономика</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2><span class="num">03</span>Возражения клиента — короткие ответы</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Клиент говорит</th>
+          <th>Вы отвечаете</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>«У Сайверхот метр дешевле»</td>
+          <td>«Сравним не метр, а объект: фасонка, КЗС, доставка, простой бригады и сдвиг даты. Дайте их КП — разложу в одну таблицу за 15 минут».</td>
+        </tr>
+        <tr>
+          <td>«У них открытый прайс, у вас торг»</td>
+          <td>«Прайс — ориентир. Вам нужна дата под монтаж и комплект. В КП будет цена, дата и состав — без сюрпризов на отгрузке».</td>
+        </tr>
+        <tr>
+          <td>«Они быстрее»</td>
+          <td>«Быстрее обещают или фиксируют? Мы ставим календарную дату в договор и ведём статус после оплаты. Готовы на неустойку по нашей вине — по условиям договора».</td>
+        </tr>
+        <tr>
+          <td>«Мы уже работали с ними»</td>
+          <td>«Отлично — значит эталон знакомый. Давайте на этом заказе покажем другой сервис: слот машины, еженедельный статус, один менеджер без пропаданий».</td>
+        </tr>
+        <tr>
+          <td>«Боимся срыва срока»</td>
+          <td>«Именно поэтому дата в договоре, а не “мощность завода”. Плюс слот транспорта только когда партия готова — без пустых рейсов».</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2><span class="num">04</span>Что говорить, когда приносят КП Сайверхот</h2>
+    <div class="script">
+      <strong>Шаг 1. Принять, не атаковать</strong>
+      <p>«Спасибо, что показали. Так честнее сравнение. Дайте 15 минут — разложу их КП и наше в одну таблицу: цена метра, фасонка, логистика, дата, условия оплаты».</p>
+    </div>
+    <div class="script">
+      <strong>Шаг 2. Перевести разговор с метра на объект</strong>
+      <p>«На ППУ почти все заводы в одном коридоре по ГОСТ. Разница — в дате, комплектации и том, кто отвечает, если бригада встанет. Давайте посчитаем стоимость дня простоя на вашем объекте».</p>
+    </div>
+    <div class="script">
+      <strong>Шаг 3. Закрыть нашим оффером</strong>
+      <p>«В нашем КП будет: 1) цена комплекта, 2) календарная дата отгрузки, 3) персональный менеджер и статус после оплаты, 4) слот машины по готовности. Если дата критична — фиксируем ответственность в договоре».</p>
+    </div>
+    <div class="script">
+      <strong>Шаг 4. Если они дешевле на 3–7%</strong>
+      <p>«Можем подойти к цене при объёме/повторе/самовывозе. Но не ценой срыва. Скажите, что важнее: минус X ₽/м или дата монтажа без сдвига?»</p>
+    </div>
+
+    <h2><span class="num">05</span>Делай / не делай</h2>
+    <div class="do-dont">
+      <div class="do">
+        <h3>✓ Делай</h3>
+        <ul>
+          <li>Проси их КП целиком (спека + сроки + логистика)</li>
+          <li>Считай TCO: труба + фасонка + стык + доставка + простой</li>
+          <li>Фиксируй дату письменно</li>
+          <li>Продавай статус после оплаты</li>
+          <li>Предлагай ППУ + НПВХ + гофру одним пакетом</li>
+        </ul>
+      </div>
+      <div class="dont">
+        <h3>✗ Не делай</h3>
+        <ul>
+          <li>Не лей грязь: «они срывают всем»</li>
+          <li>Не обещай «быстрее любого» без даты</li>
+          <li>Не демпингуй −10–15% в ноль маржи</li>
+          <li>Не спорь «кто технологичнее в СНГ»</li>
+          <li>Не пропадай после оплаты — это их дыра и наш тест</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2><span class="num">06</span>Квалификация сделки за 60 секунд</h2>
+    <table>
+      <thead>
+        <tr><th>Вопрос клиенту</th><th>Зачем</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Какая дата монтажа / штраф за простой?</td><td>Понять ценность даты</td></tr>
+        <tr><td>Нужна только труба или фасонка + КЗС + СОДК?</td><td>Поднять чек и закрыть комплект</td></tr>
+        <tr><td>Подземно или надземно? Тип 1 или 2?</td><td>Убрать ошибки в спецификации</td></tr>
+        <tr><td>Есть ли холодная вода / ливнёвка на объекте?</td><td>Продать НПВХ / гофру</td></tr>
+        <tr><td>Кто принимает решение: снабжение, ПТО, директор?</td><td>Попасть в ЛПР</td></tr>
+      </tbody>
+    </table>
+
+    <p class="footer-note">
+      Внутренний документ ЗТППУ / ООО ПЗПТ. Данные по конкуренту — из открытых источников и рынка; перед тендером сверяйте актуальные КП.
+      Не пересылать клиенту как «официальный разбор конкурента». Используйте как шпаргалку менеджера.
+    </p>
+  </div>
+</body>
+</html>

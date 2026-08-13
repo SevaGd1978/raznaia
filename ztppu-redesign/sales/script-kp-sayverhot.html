@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Скрипт: клиент принёс КП Сайверхот</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #15202b;
+      --muted: #5c6976;
+      --line: #d7dee5;
+      --heat: #b85a2a;
+      --soft: #f6e8de;
+      --ok: #e8f3ed;
+      --white: #fff;
+      --paper: #f3f5f7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Onest, system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+    }
+    .wrap {
+      width: min(820px, calc(100% - 2rem));
+      margin: 1.25rem auto 3rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 1.5rem 1.6rem;
+    }
+    h1 {
+      margin: 0;
+      font-family: Unbounded, sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: -0.03em;
+    }
+    .sub { color: var(--muted); margin: 0.4rem 0 1.2rem; font-size: 0.92rem; }
+    h2 {
+      margin: 1.6rem 0 0.7rem;
+      font-family: Unbounded, sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      border-top: 1px solid var(--line);
+      padding-top: 1.1rem;
+    }
+    .step {
+      border: 1px solid var(--line);
+      margin: 0.75rem 0;
+      overflow: hidden;
+    }
+    .step-h {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      background: #eef2f5;
+      padding: 0.65rem 0.85rem;
+      font-weight: 700;
+    }
+    .step-h span {
+      background: var(--heat);
+      color: #fff;
+      width: 1.6rem;
+      height: 1.6rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex: 0 0 auto;
+    }
+    .say, .why, .ask {
+      padding: 0.75rem 0.9rem;
+      border-top: 1px solid var(--line);
+    }
+    .say { background: var(--soft); }
+    .why { background: #fafbfc; color: var(--muted); font-size: 0.92rem; }
+    .ask { background: var(--ok); }
+    .label {
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .say .label { color: var(--heat); }
+    .ask .label { color: #1f6b4a; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 0.5rem 0 1rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.6rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #eef2f5; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    ul { margin: 0.4rem 0; padding-left: 1.15rem; }
+    .tpl {
+      white-space: pre-wrap;
+      background: #15202b;
+      color: #f3f5f7;
+      padding: 1rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      overflow-x: auto;
+    }
+    .nav { font-size: 0.9rem; margin-bottom: 1rem; }
+    .nav a { color: var(--heat); }
+    @media print {
+      body { background: #fff; }
+      .wrap { border: 0; width: 100%; margin: 0; padding: 0; }
+      .nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Скрипт: клиент принёс КП Сайверхот</h1>
+    <p class="sub">Для менеджеров ЗТППУ / ООО ПЗПТ. Цель звонка/встречи — не «убить конкурента», а перевести выбор на дату, комплект и риск простоя.</p>
+    <p class="nav">
+      <a href="battlecard-sayverhot.html">← Battlecard</a> ·
+      <a href="../index.html">Сайт</a> ·
+      <button onclick="window.print()">Печать</button>
+    </p>
+
+    <h2>До разговора: что выпросить у клиента</h2>
+    <ul>
+      <li>КП / счёт Сайверхот (PDF) целиком</li>
+      <li>Спецификация: диаметры, ПЭ/ОЦ, тип 1/2, фасонка, КЗС, СОДК</li>
+      <li>Адрес объекта и желаемая дата монтажа</li>
+      <li>Кто ЛПР: снабжение / ПТО / директор</li>
+      <li>Есть ли на объекте холодная вода / ливнёвка (вход в НПВХ/гофру)</li>
+    </ul>
+
+    <h2>Скрипт разговора по шагам</h2>
+
+    <div class="step">
+      <div class="step-h"><span>1</span> Принять КП и снять напряжение</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «Отлично, что прислали их предложение — так сравним честно, без догадок. Я не буду уговаривать “мы лучше всех”. Разложу два КП в одну таблицу: цена, комплект, дата, логистика, оплата. Это займёт до 15–30 минут после того, как получу файл».
+      </div>
+      <div class="why">Зачем: клиент ждёт войны брендов. Вы выглядите взрослыми и полезными.</div>
+      <div class="ask">
+        <span class="label">Спросите</span>
+        «Пришлите, пожалуйста, PDF целиком и скажите: какая дата критична для подачи трубы на объект?»
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span>2</span> Выяснить боль: цена или срок</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «На трубе ППУ по ГОСТ разница заводов часто 3–7% на метре. На объекте чаще убивает не метр, а день простоя бригады и сдвиг сдачи. Подскажите, что сейчас важнее: минимальная цена метра или дата без сдвига?»
+      </div>
+      <div class="why">Зачем: сегментирует сделку. Если важен срок — наш оффер. Если только цена — торгуем объёмом/логистикой, не паникуем.</div>
+      <div class="ask">
+        <span class="label">Спросите</span>
+        «Какой штраф / потери в день, если труба приедет на неделю позже?»
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span>3</span> Разобрать их КП по чек-листу</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «Смотрите, что я сверяю в их КП: только прямые участки или фасонка тоже; КЗС и СОДК внутри или потом “найдёте сами”; дата отгрузки календарная или “ориентировочно”; кто подаёт машину и что если партии нет. После этого дам наше КП в том же формате — чтобы сравнивать яблоки с яблоками».
+      </div>
+      <div class="why">Зачем: часто «дешёвый метр» без фасонки/стыка/логистики.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span>4</span> Дать наш оффер одной фразой</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «Наше предложение строится на четырёх пунктах: 1) заводская цена комплекта, 2) календарная дата отгрузки в КП и договоре, 3) персональный менеджер и статус после оплаты, 4) слот машины только когда партия реально готова. Если дата критична — готовы обсудить ответственность за сдвиг по нашей вине».
+      </div>
+      <div class="ask">
+        <span class="label">Спросите</span>
+        «Если по цене мы будем в коридоре ±3–5%, а по дате жёстче зафиксируем — этого достаточно, чтобы зайти в сделку?»
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span>5</span> Если они дешевле</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «По прямой трубе можем подойти при объёме / повторе / частичном самовывозе. Не хочу выигрывать ценой ценой срыва. Давайте зафиксируем целевую дату и состав — и я выжму цену в рамках экономики завода, без фантазий».
+      </div>
+      <div class="why">Зачем: не входим в войну −15%. Сохраняем маржу и доверие.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span>6</span> Если клиент уже «свой» у Сайверхот</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «Тогда идеальный тест: один заказ — пилот. Вы знаете их процесс. Мы на этом заказе покажем другой сервис: еженедельный статус, слот отгрузки, один менеджер на связи. Если не зайдёт — вы ничего не теряете в отношениях с ними. Если зайдёт — у вас появится второй устойчивый завод».
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span>7</span> Дополнительная продажа: НПВХ / гофра</div>
+      <div class="say">
+        <span class="label">Говорите</span>
+        «Пока считаю теплотрассу: на объекте будет холодная вода или ливнёвка? Можем в то же КП добавить НПВХ и гофру — один договор, один график, меньше поставщиков на площадке».
+      </div>
+    </div>
+
+    <h2>Таблица сравнения КП (заполняет менеджер)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Параметр</th>
+          <th>Сайверхот</th>
+          <th>ЗТППУ</th>
+          <th>Вывод для клиента</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>₽/м прямая труба</td><td></td><td></td><td></td></tr>
+        <tr><td>Фасонка / КЗС / СОДК</td><td></td><td></td><td></td></tr>
+        <tr><td>Доставка до объекта</td><td></td><td></td><td></td></tr>
+        <tr><td>Дата отгрузки</td><td></td><td></td><td></td></tr>
+        <tr><td>Оплата / отсрочка</td><td></td><td></td><td></td></tr>
+        <tr><td>Итого на объект</td><td></td><td></td><td></td></tr>
+        <tr><td>Риск простоя (оценка)</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Шаблон письма после разбора КП</h2>
+    <div class="tpl">Тема: Сравнение КП по объекту [название] — ЗТППУ
+
+[Имя], добрый день.
+
+Спасибо за КП Сайверхот — разложил сравнение.
+
+Краткий вывод:
+1) По прямой трубе разница: [X] ₽/м / [Y]%.
+2) По комплекту (фасонка + КЗС + доставка): [итог].
+3) По дате: мы готовы зафиксировать отгрузку [дата] в договоре.
+4) После оплаты — еженедельный статус и слот машины по готовности партии.
+
+Во вложении наше КП в том же составе, что и у конкурента.
+Если дата для вас приоритетнее метра — предложу условия ответственности за сдвиг по нашей вине.
+
+Готов созвониться на 10 минут сегодня в [время].
+
+[Имя менеджера]
+Завод Труб ППУ / ООО ПЗПТ
+8 800 222-72-01</div>
+
+    <h2>Красные флаги — когда лучше не демпинговать</h2>
+    <ul>
+      <li>Клиент торгует только метром и не даёт спеку/дату</li>
+      <li>Просят −15% «потому что у них так» без объёма</li>
+      <li>Нет ЛПР, вечный «мы подумаем» без сроков объекта</li>
+      <li>Просят держать резерв без оплаты дольше нормы</li>
+    </ul>
+    <p class="sub">В этих случаях оставляйте вежливый коридор цены и уходите в следующий лид. Маржу войны с открытым прайсом Сайверхот не выигрывают.</p>
+
+    <h2>Фразы, которые нельзя говорить</h2>
+    <ul>
+      <li>«Они постоянно срывают» / «у них брак» — без фактов клиента</li>
+      <li>«Мы самые быстрые в СНГ»</li>
+      <li>«Мы всегда дешевле»</li>
+      <li>«Подпишу завтра в любом случае»</li>
+    </ul>
+  </div>
+</body>
+</html>
