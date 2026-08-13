@@ -1,0 +1,109 @@
+#!/usr/bin/env sh
+set -eu
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "Ошибка: Docker не установлен." >&2
+  echo "Установка: https://docs.docker.com/engine/install/" >&2
+  exit 1
+fi
+
+if docker compose version >/dev/null 2>&1; then
+  compose() {
+    docker compose "$@"
+  }
+elif command -v docker-compose >/dev/null 2>&1; then
+  compose() {
+    docker-compose "$@"
+  }
+else
+  echo "Ошибка: Docker Compose не установлен." >&2
+  exit 1
+fi
+
+usage() {
+  cat <<'EOF'
+Использование: ./mtproxy <команда>
+
+  start    Запустить прокси и показать ссылку подключения
+  link     Показать ссылку подключения из журнала
+  status   Показать состояние контейнера
+  stats    Показать статистику MTProxy
+  restart  Перезапустить прокси
+  update   Скачать свежий образ и перезапустить прокси
+  logs     Следить за журналом
+  stop     Остановить прокси, сохранив секрет
+  remove   Удалить контейнер, сохранив секрет
+EOF
+}
+
+show_link() {
+  port=${MTPROXY_PORT:-443}
+  links=$(compose logs --no-color mtproto 2>/dev/null |
+    grep -Eo '(tg://proxy|https://t\.me/proxy)\?[^[:space:]]+' || true)
+
+  if [ -z "$links" ]; then
+    echo "Ссылка ещё не появилась. Проверьте журнал: ./mtproxy logs"
+    return
+  fi
+
+  if [ "$port" != "443" ]; then
+    links=$(printf '%s\n' "$links" | sed "s/port=443/port=$port/g")
+  fi
+
+  printf '%s\n' "$links" | sort -u
+}
+
+command=${1:-help}
+
+case "$command" in
+  start)
+    compose up -d
+    echo "MTProto Proxy запущен. Ожидаю ссылку подключения..."
+    attempts=0
+    while [ "$attempts" -lt 15 ]; do
+      if compose logs --no-color mtproto 2>/dev/null |
+        grep -Eq '(tg://proxy|https://t\.me/proxy)\?'; then
+        show_link
+        exit 0
+      fi
+      attempts=$((attempts + 1))
+      sleep 1
+    done
+    show_link
+    ;;
+  link)
+    show_link
+    ;;
+  status)
+    compose ps
+    ;;
+  stats)
+    compose exec mtproto curl -fsS http://localhost:2398/stats
+    ;;
+  restart)
+    compose restart mtproto
+    show_link
+    ;;
+  update)
+    compose pull mtproto
+    compose up -d
+    show_link
+    ;;
+  logs)
+    compose logs -f mtproto
+    ;;
+  stop)
+    compose stop mtproto
+    ;;
+  remove)
+    compose down
+    ;;
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    echo "Неизвестная команда: $command" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
