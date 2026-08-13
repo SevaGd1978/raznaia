@@ -1,12 +1,6 @@
-Публичные адреса прототипа
+Публичные адреса
 
-1) ZeroDeploy (рекомендуется, без пароля):
-   https://wandering-darkness-1038.zerodeploy.app
-   ППУ: https://wandering-darkness-1038.zerodeploy.app/#ppu
-   НПВХ: https://wandering-darkness-1038.zerodeploy.app/#npvh
-   Срок: до 2026-08-15 (около 72 часов), затем claim или redeploy.
-
-2) GitHub (ветка gh-pages готова):
-   https://github.com/SevaGd1978/raznaia/tree/gh-pages
-   Постоянный URL после включения Pages:
-   https://sevagd1978.github.io/raznaia/
+Сайт: https://little-star-760.zerodeploy.app
+Продажи: https://little-star-760.zerodeploy.app/sales/
+Battlecard: https://little-star-760.zerodeploy.app/sales/battlecard-sayverhot.html
+Скрипт КП: https://little-star-760.zerodeploy.app/sales/script-kp-sayverhot.html
