@@ -1,0 +1,16 @@
+services:
+  mtproto-proxy:
+    image: telegrammessenger/proxy:latest
+    container_name: telegram-mtproto-proxy
+    restart: unless-stopped
+    ports:
+      - "${PROXY_PORT:-443}:443"
+    environment:
+      SECRET: ${MTPROTO_SECRET}
+      # Опционально: тег для @MTProxybot (продвижение прокси в Telegram)
+      # TAG: ${MTPROTO_TAG:-}
+    volumes:
+      - mtproto-data:/data
+
+volumes:
+  mtproto-data:
