@@ -10,12 +10,17 @@ on:
       - "medfilter-monitor/**"
       - ".github/workflows/medfilter-monitor.yml"
 
+concurrency:
+  group: medfilter-monitor
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: medfilter-monitor
@@ -47,10 +52,11 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DAMIA_API_KEY: ${{ secrets.DAMIA_API_KEY }}
-          MONITOR_PROVIDERS: clearspending,zakupki_html,damia
+          # ЕИС из GitHub runners часто недоступен (connection reset)
+          MONITOR_PROVIDERS: clearspending,damia
         run: |
           mkdir -p data
-          python -m medfilter_monitor run -v
+          python -m medfilter_monitor run
 
       - name: Build public site
         run: |
@@ -71,7 +77,7 @@ jobs:
           path: medfilter-monitor/public
 
       - name: Deploy to GitHub Pages (gh-pages)
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/cursor/medfilter-procurement-monitor-827a'
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/cursor/medfilter-procurement-monitor-')
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

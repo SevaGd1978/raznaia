@@ -27,7 +27,7 @@ class ZakupkiHtmlProvider(Provider):
 
     name = "zakupki_html"
 
-    def __init__(self, session: requests.Session | None = None, timeout: int = 45) -> None:
+    def __init__(self, session: requests.Session | None = None, timeout: int = 12) -> None:
         self.session = session or requests.Session()
         self.session.headers.update(
             {
