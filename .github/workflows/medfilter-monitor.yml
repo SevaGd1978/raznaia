@@ -1,0 +1,58 @@
+name: Medfilter procurement monitor
+
+on:
+  schedule:
+    # Каждые 3 часа
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "medfilter-monitor/**"
+      - ".github/workflows/medfilter-monitor.yml"
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: medfilter-monitor
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: medfilter-monitor/requirements.txt
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Restore SQLite cache
+        uses: actions/cache@v4
+        with:
+          path: medfilter-monitor/data/procurements.db
+          key: medfilter-db-${{ github.run_id }}
+          restore-keys: |
+            medfilter-db-
+
+      - name: Run monitor
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DAMIA_API_KEY: ${{ secrets.DAMIA_API_KEY }}
+          MONITOR_PROVIDERS: clearspending,zakupki_html,damia
+        run: |
+          mkdir -p data
+          python -m medfilter_monitor run -v
+
+      - name: Upload DB artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: procurements-db
+          path: medfilter-monitor/data/procurements.db
+          if-no-files-found: ignore
