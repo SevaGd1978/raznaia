@@ -2,7 +2,7 @@
 
 ## Сейчас в интернете
 
-- Витрина: https://cold-silence-8616.zerodeploy.app
+- Витрина: https://old-glade-5805.zerodeploy.app
 - Зеркало (jsDelivr / gh-pages): https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент мониторинга крутится в GitHub Actions каждые 3 часа:
@@ -10,9 +10,10 @@ https://github.com/SevaGd1978/raznaia/actions/workflows/medfilter-monitor.yml
 
 ## Сделать витрину постоянной (не истечёт через 72ч)
 
-1. Claim: https://dashboard.zerodeploy.dev/drop-claim?token=zdr_c251664f606505dfe2736b94d612541b2d2809a36f15319fb6b35fb2d75d91c1
-2. Добавьте secret репозитория `ZERODEPLOY_CLAIM_TOKEN=zdr_c251664f606505dfe2736b94d612541b2d2809a36f15319fb6b35fb2d75d91c1`
-   — тогда Actions будет обновлять ту же витрину при каждом цикле.
+1. Claim: https://dashboard.zerodeploy.dev/drop-claim?token=zdr_SEE_.secrets/zerodeploy.json
+2. Secret репозитория `ZERODEPLOY_CLAIM_TOKEN` — автообновление того же URL из Actions.
+
+Токен claim хранится локально в `.secrets/zerodeploy.json` (не коммитится).
 
 ## Telegram-алерты
 

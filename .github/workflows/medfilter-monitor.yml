@@ -53,7 +53,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DAMIA_API_KEY: ${{ secrets.DAMIA_API_KEY }}
           # ЕИС из GitHub runners часто недоступен (connection reset)
-          MONITOR_PROVIDERS: clearspending,damia
+          MONITOR_PROVIDERS: web_fresh,clearspending,damia
         run: |
           mkdir -p data
           python -m medfilter_monitor run

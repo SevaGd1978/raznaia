@@ -25,6 +25,8 @@ class Procurement:
     okpd2: list[str] = field(default_factory=list)
     query: str = ""
     score: int = 0
+    customer_kind: str = "unknown"  # state | private | unknown
+    freshness: str = "unknown"  # fresh | recent | historical | unknown
     raw: dict[str, Any] = field(default_factory=dict, repr=False)
 
     def to_dict(self) -> dict[str, Any]:

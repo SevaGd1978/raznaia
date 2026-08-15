@@ -37,6 +37,8 @@ class Store:
                 okpd2_json TEXT,
                 query TEXT,
                 score INTEGER,
+                customer_kind TEXT DEFAULT 'unknown',
+                freshness TEXT DEFAULT 'unknown',
                 first_seen_at TEXT NOT NULL,
                 last_seen_at TEXT NOT NULL,
                 notified INTEGER NOT NULL DEFAULT 0
@@ -53,6 +55,15 @@ class Store:
             );
             """
         )
+        cols = {r[1] for r in self._conn.execute("PRAGMA table_info(procurements)").fetchall()}
+        if "customer_kind" not in cols:
+            self._conn.execute(
+                "ALTER TABLE procurements ADD COLUMN customer_kind TEXT DEFAULT 'unknown'"
+            )
+        if "freshness" not in cols:
+            self._conn.execute(
+                "ALTER TABLE procurements ADD COLUMN freshness TEXT DEFAULT 'unknown'"
+            )
         self._conn.commit()
 
     def close(self) -> None:
@@ -99,7 +110,7 @@ class Store:
                 SET title = ?, source = ?, url = ?, customer = ?, region = ?,
                     price = ?, currency = ?, published_at = ?, law = ?, status = ?,
                     products_json = ?, okpd2_json = ?, query = ?, score = ?,
-                    last_seen_at = ?
+                    customer_kind = ?, freshness = ?, last_seen_at = ?
                 WHERE id = ?
                 """,
                 (
@@ -117,6 +128,8 @@ class Store:
                     json.dumps(item.okpd2, ensure_ascii=False),
                     item.query,
                     item.score,
+                    item.customer_kind,
+                    item.freshness,
                     now,
                     item.id,
                 ),
@@ -129,8 +142,8 @@ class Store:
             INSERT INTO procurements (
                 id, title, source, url, customer, region, price, currency,
                 published_at, law, status, products_json, okpd2_json, query,
-                score, first_seen_at, last_seen_at, notified
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+                score, customer_kind, freshness, first_seen_at, last_seen_at, notified
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
             """,
             (
                 item.id,
@@ -148,6 +161,8 @@ class Store:
                 json.dumps(item.okpd2, ensure_ascii=False),
                 item.query,
                 item.score,
+                item.customer_kind,
+                item.freshness,
                 now,
                 now,
             ),
@@ -169,11 +184,43 @@ class Store:
         )
         self._conn.commit()
 
-    def recent(self, limit: int = 20) -> list[dict]:
+    def recent(self, limit: int = 20, *, fresh_only: bool = False) -> list[dict]:
+        if fresh_only:
+            rows = self._conn.execute(
+                """
+                SELECT id, title, customer, price, published_at, url, score, source,
+                       first_seen_at, customer_kind, freshness, law
+                FROM procurements
+                WHERE freshness IN ('fresh', 'recent', 'unknown')
+                   OR source IN ('web_fresh', 'rostender', 'zakupki_html', 'damia')
+                ORDER BY first_seen_at DESC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+        else:
+            rows = self._conn.execute(
+                """
+                SELECT id, title, customer, price, published_at, url, score, source,
+                       first_seen_at, customer_kind, freshness, law
+                FROM procurements
+                ORDER BY first_seen_at DESC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+        return [dict(r) for r in rows]
+
+    def private_recent(self, limit: int = 50) -> list[dict]:
         rows = self._conn.execute(
             """
-            SELECT id, title, customer, price, published_at, url, score, source, first_seen_at
+            SELECT id, title, customer, price, published_at, url, score, source,
+                   first_seen_at, customer_kind, freshness, law
             FROM procurements
+            WHERE customer_kind = 'private'
+               OR lower(customer) LIKE '%ооо%'
+               OR lower(customer) LIKE 'ао %'
+               OR lower(customer) LIKE '%акционерн%'
             ORDER BY first_seen_at DESC
             LIMIT ?
             """,

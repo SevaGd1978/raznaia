@@ -17,6 +17,7 @@ from .agent import MonitorAgent, MonitorConfig
 from .notifiers import ConsoleNotifier, MultiNotifier, TelegramNotifier
 from .providers.clearspending import ClearSpendingProvider
 from .providers.damia import DamiaProvider
+from .providers.web_fresh import WebFreshProvider
 from .providers.zakupki_html import ZakupkiHtmlProvider
 from .store import Store
 
@@ -83,21 +84,70 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "export-site":
+        from .agent import MonitorAgent
         from .site import export_site
 
         store = Store(args.db)
-        out = export_site(store, args.out, limit=args.limit, single_file=args.single_file)
+        # если есть данные в БД — считаем профили покупателей по ним
+        from .models import Procurement
+
+        recent = store.recent(300)
+        items = [
+            Procurement(
+                id=r["id"],
+                title=r.get("title") or "",
+                source=r.get("source") or "",
+                url=r.get("url") or "",
+                customer=r.get("customer") or "",
+                price=r.get("price"),
+                published_at=r.get("published_at") or "",
+                customer_kind=r.get("customer_kind") or "unknown",
+                freshness=r.get("freshness") or "unknown",
+                score=int(r.get("score") or 0),
+            )
+            for r in recent
+        ]
+        # минимальный agent только для профилей
+        agent = MonitorAgent(
+            store=store,
+            providers=[],
+            notifier=ConsoleNotifier(),
+            config=MonitorConfig(
+                queries=[],
+                include_terms=[],
+                medical_context=[],
+                exclude_terms=[],
+            ),
+        )
+        buyers = [b.to_dict() for b in agent.build_buyer_profiles(items)]
+        out = export_site(
+            store,
+            args.out,
+            limit=args.limit,
+            single_file=args.single_file,
+            buyers=buyers,
+        )
         store.close()
-        print(json.dumps({"out": str(out), "files": ["index.html", "data.json"]}, ensure_ascii=False))
+        print(json.dumps({"out": str(out), "buyers": len(buyers)}, ensure_ascii=False))
         return 0
 
     agent = _build_agent(args)
     try:
         if args.cmd == "run":
             result = agent.run_once(dry_run=args.dry_run, notify_existing=args.notify_existing)
-            print(json.dumps({k: v for k, v in result.items() if k != "items"}, ensure_ascii=False, indent=2))
+            summary = {
+                k: v
+                for k, v in result.items()
+                if k not in {"items", "buyers", "private_items", "fresh_items"}
+            }
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
             if args.dry_run or args.verbose:
-                print(json.dumps(result.get("items", []), ensure_ascii=False, indent=2))
+                print(json.dumps({
+                    "fresh_items": result.get("fresh_items", [])[:20],
+                    "private_items": result.get("private_items", [])[:20],
+                    "buyers": result.get("buyers", [])[:15],
+                    "new_items": result.get("items", [])[:20],
+                }, ensure_ascii=False, indent=2))
             return 0
 
         if args.cmd == "daemon":
@@ -124,7 +174,10 @@ def _add_common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--db", type=Path, default=Path(os.getenv("MONITOR_DB", str(DEFAULT_DB))))
     p.add_argument(
         "--providers",
-        default=os.getenv("MONITOR_PROVIDERS", "clearspending,zakupki_html,damia"),
+        default=os.getenv(
+            "MONITOR_PROVIDERS",
+            "web_fresh,clearspending,zakupki_html,damia",
+        ),
         help="Список провайдеров через запятую",
     )
 
@@ -139,10 +192,15 @@ def _build_agent(args: argparse.Namespace) -> MonitorAgent:
         min_score=int(cfg_raw.get("min_score", 45)),
         per_query_limit=int(cfg_raw.get("per_query_limit", 25)),
         max_notify_per_run=int(cfg_raw.get("max_notify_per_run", 30)),
+        max_age_days=int(cfg_raw.get("max_age_days", 200)),
+        private_queries=list(cfg_raw.get("private_queries") or []),
+        require_fresh_for_notify=bool(cfg_raw.get("require_fresh_for_notify", True)),
     )
 
     wanted = {x.strip() for x in str(args.providers).split(",") if x.strip()}
     providers = []
+    if "web_fresh" in wanted:
+        providers.append(WebFreshProvider())
     if "clearspending" in wanted:
         providers.append(ClearSpendingProvider())
     if "zakupki_html" in wanted:
