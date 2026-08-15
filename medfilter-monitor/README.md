@@ -17,8 +17,7 @@
 
 Сейчас в интернете:
 
-- https://empty-morning-8226.zerodeploy.app
-- JSON: https://empty-morning-8226.zerodeploy.app/data.json
+- https://cold-silence-8616.zerodeploy.app
 - Зеркало: https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент (cron каждые 3 часа): GitHub Actions workflow `Medfilter procurement monitor`.

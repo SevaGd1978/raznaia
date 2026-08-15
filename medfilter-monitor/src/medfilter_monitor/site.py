@@ -10,7 +10,13 @@ from pathlib import Path
 from .store import Store
 
 
-def export_site(store: Store, out_dir: str | Path, *, limit: int = 100) -> Path:
+def export_site(
+    store: Store,
+    out_dir: str | Path,
+    *,
+    limit: int = 100,
+    single_file: bool = False,
+) -> Path:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     items = store.recent(limit)
@@ -25,7 +31,14 @@ def export_site(store: Store, out_dir: str | Path, *, limit: int = 100) -> Path:
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    (out / "index.html").write_text(_render_html(payload), encoding="utf-8")
+    html = _render_html(payload)
+    if single_file:
+        boot = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c")
+        html = html.replace(
+            "</body>",
+            f'<script type="application/json" id="boot-data">{boot}</script>\n</body>',
+        )
+    (out / "index.html").write_text(html, encoding="utf-8")
     return out
 
 

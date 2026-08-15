@@ -60,7 +60,7 @@ jobs:
 
       - name: Build public site
         run: |
-          python -m medfilter_monitor export-site --out public --limit 120
+          python -m medfilter_monitor export-site --out public --limit 120 --single-file
 
       - name: Upload DB artifact
         if: always()
@@ -97,11 +97,11 @@ jobs:
             echo "ZERODEPLOY_CLAIM_TOKEN not set — skip ZeroDeploy update (site already live)."
             exit 0
           fi
-          tar -czf /tmp/medfilter-site.tar.gz .
           RESP=$(curl -sS -X POST "https://api.zerodeploy.dev/drop" \
-            -H "Content-Type: application/gzip" \
+            -H "Content-Type: text/html" \
+            -H "X-Filename: index.html" \
             -H "X-Claim-Token: ${ZERODEPLOY_CLAIM_TOKEN}" \
-            --data-binary @/tmp/medfilter-site.tar.gz)
+            --data-binary @index.html)
           echo "$RESP" | tee "$GITHUB_WORKSPACE/medfilter-monitor/public/zerodeploy.json"
           python3 - <<'PY'
           import json, pathlib

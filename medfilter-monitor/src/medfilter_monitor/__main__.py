@@ -64,6 +64,11 @@ def main(argv: list[str] | None = None) -> int:
     export_p.add_argument("--db", type=Path, default=DEFAULT_DB)
     export_p.add_argument("--out", type=Path, default=ROOT / "public")
     export_p.add_argument("--limit", type=int, default=100)
+    export_p.add_argument(
+        "--single-file",
+        action="store_true",
+        help="Встроить JSON в HTML (удобно для ZeroDeploy Drop)",
+    )
 
     args = parser.parse_args(argv)
     logging.basicConfig(
@@ -81,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
         from .site import export_site
 
         store = Store(args.db)
-        out = export_site(store, args.out, limit=args.limit)
+        out = export_site(store, args.out, limit=args.limit, single_file=args.single_file)
         store.close()
         print(json.dumps({"out": str(out), "files": ["index.html", "data.json"]}, ensure_ascii=False))
         return 0
