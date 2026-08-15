@@ -52,7 +52,7 @@ class TelegramNotifier(Notifier):
                 f"<code>{_esc(item.id)}</code>\n"
                 f"{_esc(item.title[:350])}\n"
                 f"Заказчик: {_esc(item.customer or 'н/д')}\n"
-                f"Цена: {_price(item)}\n"
+                f"<b>{_esc(_price(item))}</b>\n"
                 f"Дата: {_esc(item.published_at or 'н/д')}\n"
                 f"Score: {item.score} | {_esc(item.source)}\n"
                 f'<a href="{_esc(item.url)}">Открыть</a>'
@@ -99,6 +99,6 @@ def _esc(value: str) -> str:
 
 
 def _price(item: Procurement) -> str:
-    if item.price is None:
-        return "н/д"
-    return f"{item.price:,.0f} {item.currency}".replace(",", " ")
+    from .lot_analysis import format_lot_price
+
+    return format_lot_price(item.price, item.currency)

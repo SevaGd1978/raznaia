@@ -10,6 +10,7 @@ from urllib.parse import urljoin
 
 import requests
 
+from ..lot_analysis import extract_price_from_html, parse_money
 from ..models import Procurement
 from . import Provider
 
@@ -91,12 +92,19 @@ def parse_rostender_html(html: str, *, url: str, query: str = "") -> Procurement
             break
 
     price = None
-    mp = re.search(r"([\d\s]{2,}[.,]\d{2})\s*₽", joined)
-    if mp:
-        try:
-            price = float(mp.group(1).replace(" ", "").replace(",", "."))
-        except ValueError:
-            price = None
+    # Сначала явная «Начальная цена» / НМЦК
+    for i, line in enumerate(lines):
+        low = line.lower().replace("\xa0", " ")
+        if "начальная цена" in low or low in {"нмцк", "нмц"} or low.startswith("нмцк"):
+            price = parse_money(line) or (
+                parse_money(lines[i + 1]) if i + 1 < len(lines) else None
+            )
+            if price is not None:
+                break
+    if price is None:
+        price, meta_price = extract_price_from_html(html)
+    else:
+        meta_price = {"price_source": "начальная цена"}
 
     published = ""
     for i, line in enumerate(lines):
@@ -119,7 +127,7 @@ def parse_rostender_html(html: str, *, url: str, query: str = "") -> Procurement
         status="active",
         products=[title],
         query=query,
-        raw={"inn": inn, "reg": reg},
+        raw={"inn": inn, "reg": reg, **meta_price},
     )
 
 

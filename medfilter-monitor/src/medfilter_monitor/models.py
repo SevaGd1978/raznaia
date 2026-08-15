@@ -35,13 +35,15 @@ class Procurement:
         return data
 
     def short_summary(self) -> str:
-        price = f"{self.price:,.0f} {self.currency}".replace(",", " ") if self.price is not None else "н/д"
+        from .lot_analysis import format_lot_price
+
+        price = format_lot_price(self.price, self.currency)
         products = "; ".join(self.products[:3]) if self.products else self.title
         return (
             f"#{self.id}\n"
             f"{products}\n"
             f"Заказчик: {self.customer or 'н/д'}\n"
-            f"Цена: {price}\n"
+            f"{price}\n"
             f"Дата: {self.published_at or 'н/д'}\n"
             f"Источник: {self.source} | score={self.score}\n"
             f"{self.url}"
