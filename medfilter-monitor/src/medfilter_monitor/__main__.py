@@ -85,10 +85,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "export-site":
         from .agent import MonitorAgent
+        from .auth import load_or_create_access
         from .site import export_site
 
         store = Store(args.db)
-        # если есть данные в БД — считаем профили покупателей по ним
         from .models import Procurement
 
         recent = store.recent(300)
@@ -107,7 +107,6 @@ def main(argv: list[str] | None = None) -> int:
             )
             for r in recent
         ]
-        # минимальный agent только для профилей
         agent = MonitorAgent(
             store=store,
             providers=[],
@@ -120,15 +119,33 @@ def main(argv: list[str] | None = None) -> int:
             ),
         )
         buyers = [b.to_dict() for b in agent.build_buyer_profiles(items)]
+        site_url = os.getenv("SITE_URL", "").strip()
+        access = load_or_create_access(site_url=site_url, rotate_demo=True)
         out = export_site(
             store,
             args.out,
             limit=args.limit,
             single_file=args.single_file,
             buyers=buyers,
+            access=access,
+            site_url=site_url,
         )
         store.close()
-        print(json.dumps({"out": str(out), "buyers": len(buyers)}, ensure_ascii=False))
+        access_file = ROOT / ".secrets" / "ACCESS.txt"
+        print(
+            json.dumps(
+                {
+                    "out": str(out),
+                    "buyers": len(buyers),
+                    "demo_user": access.demo_user,
+                    "demo_expires_at": access.demo_expires_at,
+                    "admin_user": access.admin_user,
+                    "access_file": str(access_file),
+                },
+                ensure_ascii=False,
+            )
+        )
+        print(f"ACCESS written to {access_file} (demo until {access.demo_expires_at})")
         return 0
 
     agent = _build_agent(args)

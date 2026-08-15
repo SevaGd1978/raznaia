@@ -2,7 +2,7 @@
 
 ## Сейчас в интернете
 
-- Витрина: https://fragrant-smoke-4733.zerodeploy.app
+- Витрина: https://solitary-morning-3466.zerodeploy.app
 - Зеркало (jsDelivr / gh-pages): https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент мониторинга крутится в GitHub Actions каждые 3 часа:
@@ -22,3 +22,13 @@ https://github.com/SevaGd1978/raznaia/actions/workflows/medfilter-monitor.yml
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - опционально `DAMIA_API_KEY`
+
+
+## Доступ (логин на витрине)
+
+Учётки генерируются при `export-site` и пишутся в `.secrets/ACCESS.txt` (не в git).
+
+- **demo** — 72 часа с момента генерации
+- **admin** — постоянный доступ, видит data.json
+
+Актуальные логин/пароль смотрите в `.secrets/ACCESS.txt` после сборки витрины.
