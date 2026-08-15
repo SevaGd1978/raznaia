@@ -82,12 +82,15 @@ jobs:
           user_email: github-actions[bot]@users.noreply.github.com
 
       - name: Deploy public showcase to ZeroDeploy
-        if: ${{ secrets.ZERODEPLOY_CLAIM_TOKEN != '' }}
         working-directory: medfilter-monitor/public
         env:
           ZERODEPLOY_CLAIM_TOKEN: ${{ secrets.ZERODEPLOY_CLAIM_TOKEN }}
         run: |
           set -euo pipefail
+          if [ -z "${ZERODEPLOY_CLAIM_TOKEN:-}" ]; then
+            echo "ZERODEPLOY_CLAIM_TOKEN not set — skip ZeroDeploy update (site already live)."
+            exit 0
+          fi
           tar -czf /tmp/medfilter-site.tar.gz .
           RESP=$(curl -sS -X POST "https://api.zerodeploy.dev/drop" \
             -H "Content-Type: application/gzip" \
