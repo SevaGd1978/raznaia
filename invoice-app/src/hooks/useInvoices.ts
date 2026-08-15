@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   createEmptyInvoice,
   createLaborLine,
@@ -7,21 +7,72 @@ import {
   type LaborLine,
   type PartLine,
 } from '../types'
-import { loadActiveId, loadDrafts, saveActiveId, saveDrafts } from '../lib/storage'
+import { fetchInvoices, saveInvoices } from '../lib/api'
 
-export function useInvoices() {
-  const [drafts, setDrafts] = useState<Invoice[]>(() => loadDrafts())
-  const [activeId, setActiveId] = useState(() => loadActiveId(loadDrafts()))
+export function useInvoices(enabled: boolean) {
+  const [drafts, setDrafts] = useState<Invoice[]>([])
+  const [activeId, setActiveId] = useState('')
+  const [ready, setReady] = useState(false)
+  const [syncError, setSyncError] = useState<string | null>(null)
+  const skipNextSave = useRef(true)
 
   useEffect(() => {
-    saveDrafts(drafts)
-  }, [drafts])
+    if (!enabled) {
+      setDrafts([])
+      setActiveId('')
+      setReady(false)
+      return
+    }
+
+    let cancelled = false
+    setReady(false)
+    skipNextSave.current = true
+
+    fetchInvoices()
+      .then((data) => {
+        if (cancelled) return
+        const invoices = (data.invoices as Invoice[]) ?? []
+        if (invoices.length === 0) {
+          const empty = createEmptyInvoice()
+          setDrafts([empty])
+          setActiveId(empty.id)
+        } else {
+          setDrafts(invoices)
+          setActiveId(invoices[0].id)
+        }
+        setReady(true)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setSyncError(err instanceof Error ? err.message : 'Не удалось загрузить счета')
+        const empty = createEmptyInvoice()
+        setDrafts([empty])
+        setActiveId(empty.id)
+        setReady(true)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [enabled])
 
   useEffect(() => {
-    if (activeId) saveActiveId(activeId)
-  }, [activeId])
+    if (!enabled || !ready) return
+    if (skipNextSave.current) {
+      skipNextSave.current = false
+      return
+    }
 
-  const invoice = drafts.find((d) => d.id === activeId) ?? drafts[0]
+    const timer = window.setTimeout(() => {
+      void saveInvoices(drafts).catch((err) => {
+        setSyncError(err instanceof Error ? err.message : 'Ошибка сохранения')
+      })
+    }, 400)
+
+    return () => window.clearTimeout(timer)
+  }, [drafts, enabled, ready])
+
+  const invoice = drafts.find((d) => d.id === activeId) ?? drafts[0] ?? createEmptyInvoice()
 
   function updateInvoice(patch: Partial<Invoice> | ((current: Invoice) => Invoice)) {
     setDrafts((prev) =>
@@ -97,6 +148,8 @@ export function useInvoices() {
     drafts,
     invoice,
     activeId,
+    ready,
+    syncError,
     setActiveId,
     createDraft,
     deleteDraft,
