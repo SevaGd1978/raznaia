@@ -11,3 +11,7 @@ data/*.db-*
 dist/
 build/
 .DS_Store
+
+.secrets/
+public/
+zerodeploy.json

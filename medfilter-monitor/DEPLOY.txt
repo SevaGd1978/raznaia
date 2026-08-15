@@ -1,0 +1,24 @@
+# Публичный деплой витрины
+
+## Сейчас в интернете
+
+- Витрина: https://empty-morning-8226.zerodeploy.app
+- JSON API: https://empty-morning-8226.zerodeploy.app/data.json
+- Зеркало (jsDelivr / gh-pages): https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
+
+Агент мониторинга крутится в GitHub Actions каждые 3 часа:
+https://github.com/SevaGd1978/raznaia/actions/workflows/medfilter-monitor.yml
+
+## Сделать витрину постоянной (не истечёт через 72ч)
+
+1. Откройте claim-ссылку из секрета/лога деплоя (или создайте заново через Drop API).
+2. Залогиньтесь на ZeroDeploy и claim’ните сайт.
+3. Добавьте secret репозитория `ZERODEPLOY_CLAIM_TOKEN` — тогда Actions будет обновлять ту же витрину при каждом цикле.
+
+## Telegram-алерты
+
+Добавьте secrets:
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- опционально `DAMIA_API_KEY`
