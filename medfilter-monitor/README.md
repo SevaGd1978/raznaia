@@ -15,10 +15,15 @@
 
 ## Публичная витрина
 
-После деплоя на GitHub Pages:
+Сейчас в интернете:
 
-- сайт: `https://sevagd1978.github.io/raznaia/medfilter/`
-- JSON: `https://sevagd1978.github.io/raznaia/medfilter/data.json`
+- https://empty-morning-8226.zerodeploy.app
+- JSON: https://empty-morning-8226.zerodeploy.app/data.json
+- Зеркало: https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
+
+Агент (cron каждые 3 часа): GitHub Actions workflow `Medfilter procurement monitor`.
+
+Подробности: [`DEPLOY.txt`](DEPLOY.txt).
 
 Локальная сборка витрины:
 

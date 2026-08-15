@@ -80,3 +80,26 @@ jobs:
           keep_files: false
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
+
+      - name: Deploy public showcase to ZeroDeploy
+        if: ${{ secrets.ZERODEPLOY_CLAIM_TOKEN != '' }}
+        working-directory: medfilter-monitor/public
+        env:
+          ZERODEPLOY_CLAIM_TOKEN: ${{ secrets.ZERODEPLOY_CLAIM_TOKEN }}
+        run: |
+          set -euo pipefail
+          tar -czf /tmp/medfilter-site.tar.gz .
+          RESP=$(curl -sS -X POST "https://api.zerodeploy.dev/drop" \
+            -H "Content-Type: application/gzip" \
+            -H "X-Claim-Token: ${ZERODEPLOY_CLAIM_TOKEN}" \
+            --data-binary @/tmp/medfilter-site.tar.gz)
+          echo "$RESP" | tee "$GITHUB_WORKSPACE/medfilter-monitor/public/zerodeploy.json"
+          python3 - <<'PY'
+          import json, pathlib
+          p = pathlib.Path("zerodeploy.json")
+          data = json.loads(p.read_text())
+          url = (data.get("data") or {}).get("url")
+          print(f"ZeroDeploy URL: {url}")
+          if url:
+              print(f"::notice title=Public showcase::{url}")
+          PY
