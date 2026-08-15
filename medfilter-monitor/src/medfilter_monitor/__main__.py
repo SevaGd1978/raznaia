@@ -59,6 +59,12 @@ def main(argv: list[str] | None = None) -> int:
     recent_p.add_argument("--db", type=Path, default=DEFAULT_DB)
     recent_p.add_argument("--limit", type=int, default=20)
 
+    export_p = sub.add_parser("export-site", help="Собрать публичную HTML-витрину")
+    export_p.add_argument("-v", "--verbose", action="store_true")
+    export_p.add_argument("--db", type=Path, default=DEFAULT_DB)
+    export_p.add_argument("--out", type=Path, default=ROOT / "public")
+    export_p.add_argument("--limit", type=int, default=100)
+
     args = parser.parse_args(argv)
     logging.basicConfig(
         level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
@@ -69,6 +75,15 @@ def main(argv: list[str] | None = None) -> int:
         store = Store(args.db)
         print(json.dumps(store.recent(args.limit), ensure_ascii=False, indent=2))
         store.close()
+        return 0
+
+    if args.cmd == "export-site":
+        from .site import export_site
+
+        store = Store(args.db)
+        out = export_site(store, args.out, limit=args.limit)
+        store.close()
+        print(json.dumps({"out": str(out), "files": ["index.html", "data.json"]}, ensure_ascii=False))
         return 0
 
     agent = _build_agent(args)
@@ -96,7 +111,7 @@ def main(argv: list[str] | None = None) -> int:
                 time.sleep(max(60, args.interval))
     finally:
         agent.store.close()
-
+    return 0
 
 def _add_common(p: argparse.ArgumentParser) -> None:
     p.add_argument("-v", "--verbose", action="store_true")

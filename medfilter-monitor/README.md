@@ -13,6 +13,20 @@
 - Оценка релевантности (отсекает авто/масло/топливо и т.п.)
 - Режимы: разовый `run`, непрерывный `daemon`, GitHub Actions по cron
 
+## Публичная витрина
+
+После деплоя на GitHub Pages:
+
+- сайт: `https://sevagd1978.github.io/raznaia/medfilter/`
+- JSON: `https://sevagd1978.github.io/raznaia/medfilter/data.json`
+
+Локальная сборка витрины:
+
+```bash
+python -m medfilter_monitor run --providers clearspending --dry-run
+python -m medfilter_monitor export-site --out public
+```
+
 ## Быстрый старт
 
 ```bash

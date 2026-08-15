@@ -10,6 +10,9 @@ on:
       - "medfilter-monitor/**"
       - ".github/workflows/medfilter-monitor.yml"
 
+permissions:
+  contents: write
+
 jobs:
   monitor:
     runs-on: ubuntu-latest
@@ -49,6 +52,10 @@ jobs:
           mkdir -p data
           python -m medfilter_monitor run -v
 
+      - name: Build public site
+        run: |
+          python -m medfilter_monitor export-site --out public --limit 120
+
       - name: Upload DB artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -56,3 +63,20 @@ jobs:
           name: procurements-db
           path: medfilter-monitor/data/procurements.db
           if-no-files-found: ignore
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medfilter-public-site
+          path: medfilter-monitor/public
+
+      - name: Deploy to GitHub Pages (gh-pages)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/cursor/medfilter-procurement-monitor-827a'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: medfilter-monitor/public
+          destination_dir: medfilter
+          keep_files: false
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
