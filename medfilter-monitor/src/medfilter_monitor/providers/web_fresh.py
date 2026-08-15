@@ -10,6 +10,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 import requests
 
+from ..lot_analysis import enrich_lot_price, parse_money
 from ..models import Procurement
 from . import Provider
 from .rostender import RosTenderProvider
@@ -52,7 +53,7 @@ class WebFreshProvider(Provider):
         rostender_urls = [h["url"] for h in hits if "rostender.info" in h["url"]]
         items = self.rostender.fetch_urls(rostender_urls[:limit], query=query)
 
-        # Прямые ссылки ЕИС / агрегаторов без полного HTML — сохраняем как web-hit
+        # Прямые ссылки ЕИС / агрегаторов — сохраняем и анализируем цену лота
         for hit in hits:
             url = hit["url"]
             if "rostender.info" in url:
@@ -62,6 +63,14 @@ class WebFreshProvider(Provider):
             reg = _extract_reg(url, hit["title"])
             pid = f"web:{reg}" if reg else f"web:{abs(hash(url)) % 10**12}"
             customer = _guess_customer(hit["title"], query)
+            price = parse_money(hit["title"]) or parse_money(hit.get("snippet") or "")
+            meta: dict = dict(hit)
+            # Не ходим на каталоги/категории — только карточки лотов
+            if price is None and _is_lot_detail_url(url):
+                price, price_meta = enrich_lot_price(
+                    url, session=self.session, timeout=min(self.timeout, 15), title=hit["title"]
+                )
+                meta.update(price_meta)
             items.append(
                 Procurement(
                     id=pid,
@@ -69,15 +78,26 @@ class WebFreshProvider(Provider):
                     source=self.name,
                     url=url,
                     customer=customer,
+                    price=price,
                     published_at=str(self.year_hint),
                     status="active",
                     products=[hit["title"]],
                     query=query,
-                    raw=hit,
+                    raw=meta,
                 )
             )
             if len(items) >= limit:
                 break
+
+        # добираем цены для rostender-лотов без цены
+        for item in items:
+            if item.price is None and item.url and "rostender.info" in item.url:
+                price, meta = enrich_lot_price(
+                    item.url, session=self.session, timeout=min(self.timeout, 15), title=item.title
+                )
+                if price is not None:
+                    item.price = price
+                    item.raw.update(meta)
         return items[:limit]
 
     def _ddg(self, query: str, *, limit: int = 10) -> list[dict]:
@@ -90,6 +110,34 @@ class WebFreshProvider(Provider):
             return []
 
         out: list[dict] = []
+        # пары ссылка + соседний сниппет
+        blocks = re.split(r'class="result__body"|class="result results_links', html)
+        for block in blocks:
+            m = re.search(
+                r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+                block,
+                re.I | re.S,
+            )
+            if not m:
+                continue
+            href = unescape(m.group(1))
+            title = re.sub(r"<[^>]+>", " ", unescape(m.group(2)))
+            title = re.sub(r"\s+", " ", title).strip()
+            url = _unwrap_ddg(href)
+            if not url:
+                continue
+            sn = re.search(r'class="result__snippet"[^>]*>(.*?)</(?:a|td|div)', block, re.I | re.S)
+            snippet = ""
+            if sn:
+                snippet = re.sub(r"<[^>]+>", " ", unescape(sn.group(1)))
+                snippet = re.sub(r"\s+", " ", snippet).strip()
+            out.append({"title": title, "url": url, "snippet": snippet})
+            if len(out) >= limit:
+                break
+        if out:
+            return out
+
+        # fallback: только ссылки
         for m in re.finditer(
             r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
             html,
@@ -101,7 +149,7 @@ class WebFreshProvider(Provider):
             url = _unwrap_ddg(href)
             if not url:
                 continue
-            out.append({"title": title, "url": url})
+            out.append({"title": title, "url": url, "snippet": ""})
             if len(out) >= limit:
                 break
         return out
@@ -185,3 +233,20 @@ def _guess_customer(title: str, query: str) -> str:
         if key in blob:
             return name
     return ""
+
+
+def _is_lot_detail_url(url: str) -> bool:
+    low = url.lower()
+    if any(x in low for x in ("/category/", "/search", "/search-tender/", "tendery-filtr", "tendery-na-")):
+        return False
+    markers = (
+        "/tender/",
+        "/procedures/",
+        "regnumber=",
+        "-tender-",
+        "/notice/",
+        "/epz/order/",
+        "/44-fz/procedures/",
+        "/223-fz/",
+    )
+    return any(m in low for m in markers)

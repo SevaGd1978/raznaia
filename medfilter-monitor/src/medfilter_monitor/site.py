@@ -84,23 +84,31 @@ def export_site(
 
 
 def _card(item: dict) -> str:
+    from .lot_analysis import format_lot_price
+
     price = item.get("price")
-    price_s = f"{price:,.0f} ₽".replace(",", " ") if isinstance(price, (int, float)) else "—"
+    price_s = format_lot_price(
+        float(price) if isinstance(price, (int, float)) else None,
+        str(item.get("currency") or "RUB"),
+    )
     url = item.get("url") or "#"
     kind = item.get("customer_kind") or "unknown"
     fresh = item.get("freshness") or "unknown"
+    has_price = isinstance(price, (int, float))
+    price_class = "price" if has_price else "price missing"
     return f"""
             <article class="card">
+              <div class="{price_class}">{escape(price_s)}</div>
               <a class="title" href="{escape(url)}" target="_blank" rel="noopener noreferrer">
                 {escape(str(item.get("title") or "Без названия"))}
               </a>
               <p class="customer">{escape(str(item.get("customer") or "Заказчик не указан"))}</p>
               <div class="meta">
-                <span>{escape(price_s)}</span>
                 <span>{escape(str(item.get("published_at") or "—")[:10])}</span>
                 <span class="tag">{escape(fresh)}</span>
                 <span class="tag">{escape(kind)}</span>
                 <span>{escape(str(item.get("source") or ""))}</span>
+                <span>score {escape(str(item.get("score") or "—"))}</span>
               </div>
             </article>
             """
@@ -213,6 +221,23 @@ def _render_html(payload: dict, *, access: AccessBundle) -> str:
     .tag {{
       border: 1px solid var(--line); border-radius: 999px; padding: 0.1rem 0.55rem;
       color: var(--warn);
+    }}
+    .price {{
+      display: inline-block;
+      margin: 0 0 0.55rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(62, 207, 154, 0.16);
+      border: 1px solid rgba(62, 207, 154, 0.35);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }}
+    .price.missing {{
+      background: rgba(240, 198, 116, 0.08);
+      border-color: rgba(240, 198, 116, 0.25);
+      color: var(--warn);
+      font-weight: 600;
     }}
     .empty {{ color: var(--muted); }}
     footer {{ margin-top: 2rem; color: var(--muted); font-size: 0.85rem; }}
