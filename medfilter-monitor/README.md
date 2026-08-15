@@ -18,7 +18,7 @@
 
 Сейчас в интернете:
 
-- https://old-glade-5805.zerodeploy.app
+- https://fragrant-smoke-4733.zerodeploy.app
 - Зеркало: https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент (cron каждые 3 часа): GitHub Actions workflow `Medfilter procurement monitor`.

@@ -93,15 +93,13 @@ jobs:
           ZERODEPLOY_CLAIM_TOKEN: ${{ secrets.ZERODEPLOY_CLAIM_TOKEN }}
         run: |
           set -euo pipefail
-          if [ -z "${ZERODEPLOY_CLAIM_TOKEN:-}" ]; then
-            echo "ZERODEPLOY_CLAIM_TOKEN not set — skip ZeroDeploy update (site already live)."
-            exit 0
+          HDR=(-H "Content-Type: text/html" -H "X-Filename: index.html")
+          # Claim-redeploy на Drop API бывает нестабилен; по умолчанию — новый drop,
+          # а при рабочем токене пробуем обновить тот же URL.
+          if [ -n "${ZERODEPLOY_CLAIM_TOKEN:-}" ]; then
+            HDR+=(-H "X-Claim-Token: ${ZERODEPLOY_CLAIM_TOKEN}")
           fi
-          RESP=$(curl -sS -X POST "https://api.zerodeploy.dev/drop" \
-            -H "Content-Type: text/html" \
-            -H "X-Filename: index.html" \
-            -H "X-Claim-Token: ${ZERODEPLOY_CLAIM_TOKEN}" \
-            --data-binary @index.html)
+          RESP=$(curl -sS -X POST "https://api.zerodeploy.dev/drop" "${HDR[@]}" --data-binary @index.html)
           echo "$RESP" | tee "$GITHUB_WORKSPACE/medfilter-monitor/public/zerodeploy.json"
           python3 - <<'PY'
           import json, pathlib

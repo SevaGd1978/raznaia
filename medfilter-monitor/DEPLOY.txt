@@ -2,7 +2,7 @@
 
 ## Сейчас в интернете
 
-- Витрина: https://old-glade-5805.zerodeploy.app
+- Витрина: https://fragrant-smoke-4733.zerodeploy.app
 - Зеркало (jsDelivr / gh-pages): https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент мониторинга крутится в GitHub Actions каждые 3 часа:
