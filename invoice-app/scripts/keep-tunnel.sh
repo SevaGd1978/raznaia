@@ -43,44 +43,31 @@ while true; do
   cat > "$ACCESS_FILE" <<EOF
 # Доступ к СчётМастер
 
-Публичный адрес (Cloudflare Tunnel):
+## Актуальный адрес (сейчас работает)
 
 **${url}**
 
-> Адрес обновляется автоматически, пока запущен cloud-агент.
-> Старый trycloudflare-адрес перестаёт работать после перезапуска туннеля.
+Старые адреса \`*.trycloudflare.com\` перестают работать после перезапуска туннеля.
 
 ## Учётные записи
 
-### Администратор
-- Логин: \`admin\`
-- Пароль: \`AdminRaznaia2026\`
+| Роль | Логин | Пароль |
+|---|---|---|
+| Админ | \`admin\` | \`AdminRaznaia2026\` |
+| Демо | \`demo\` | \`demo123\` |
+| Новый | вкладка «Регистрация» | свой пароль (≥ 6 символов) |
 
-### Регистрация
-Вкладка **Регистрация** на странице входа.
+## Постоянный хостинг (не пропадает)
 
-### Демо
-- Логин: \`demo\`
-- Пароль: \`demo123\`
+Бесплатный Render:
 
-## Постоянный хостинг
+1. Откройте https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
+2. Подтвердите Blueprint (\`render.yaml\`)
+3. Получите постоянный URL вида \`https://schetmaster.onrender.com\`
 
-Для адреса, который не пропадает, задеплойте на Render (бесплатно):
-
-1. Откройте: https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
-2. Подтвердите Blueprint из \`render.yaml\`
-3. В Environment задайте \`ADMIN_PASSWORD\` и \`JWT_SECRET\`
-
-Либо локально / на VPS:
-
-\`\`\`bash
-cd invoice-app
-cp .env.example .env
-npm install && npm run build && npm start
-\`\`\`
+Пароль админа на Render: \`AdminRaznaia2026\`.
 EOF
 
-  # Wait until cloudflared exits, then restart
   wait "$pid" || true
   echo "tunnel exited, restarting in 2s..." >&2
   sleep 2
