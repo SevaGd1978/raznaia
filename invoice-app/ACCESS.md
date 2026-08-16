@@ -1,22 +1,24 @@
-# Доступ к СчётМастер
+# Доступ к СчётМастер (из России)
 
-## Новый хостинг (не Cloudflare)
+Cloudflare (`*.trycloudflare.com`) из РФ часто не открывается.
 
-**https://805b5213a8a64d.lhr.life**
+## Рабочая ссылка сейчас
 
-Дополнительно:
-- http://bore.pub:34666
-- https://fjywc-35-167-27-154.free.pinggy.net
+**https://odpnn-52-13-17-46.run.pinggy-free.link**
+
+Резерв: **https://qgtgq-52-13-17-46.free.pinggy.net**
 
 | Роль | Логин | Пароль |
 |---|---|---|
 | Админ | `admin` | `AdminRaznaia2026` |
 | Демо | `demo` | `demo123` |
 
-## Постоянный хостинг
+## Постоянный хостинг (рекомендуется)
 
-Нужен ваш вход через GitHub (я не могу завершить OAuth за вас):
+Чтобы ссылка не пропадала и стабильно открывалась из России — Render:
 
-1. **Render** → https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia  
-2. **Amvera (РФ)** → https://amvera.ru (Dockerfile уже в корне репозитория)  
-3. **GitHub Actions** → https://github.com/SevaGd1978/raznaia/actions/workflows/host-public.yml (Run workflow)
+1. https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
+2. Подтвердите Blueprint
+3. Получите адрес `https://schetmaster.onrender.com`
+
+Пароль админа: `AdminRaznaia2026`
