@@ -1,0 +1,112 @@
+name: Medfilter procurement monitor
+
+on:
+  schedule:
+    # Каждые 3 часа
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "medfilter-monitor/**"
+      - ".github/workflows/medfilter-monitor.yml"
+
+concurrency:
+  group: medfilter-monitor
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: medfilter-monitor
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: medfilter-monitor/requirements.txt
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Restore SQLite cache
+        uses: actions/cache@v4
+        with:
+          path: medfilter-monitor/data/procurements.db
+          key: medfilter-db-${{ github.run_id }}
+          restore-keys: |
+            medfilter-db-
+
+      - name: Run monitor
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DAMIA_API_KEY: ${{ secrets.DAMIA_API_KEY }}
+          # ЕИС из GitHub runners часто недоступен (connection reset)
+          MONITOR_PROVIDERS: web_fresh,clearspending,damia
+        run: |
+          mkdir -p data
+          python -m medfilter_monitor run
+
+      - name: Build public site
+        run: |
+          python -m medfilter_monitor export-site --out public --limit 120 --single-file
+
+      - name: Upload DB artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: procurements-db
+          path: medfilter-monitor/data/procurements.db
+          if-no-files-found: ignore
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medfilter-public-site
+          path: medfilter-monitor/public
+
+      - name: Deploy to GitHub Pages (gh-pages)
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/cursor/medfilter-procurement-monitor-')
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: medfilter-monitor/public
+          destination_dir: medfilter
+          keep_files: false
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
+      - name: Deploy public showcase to ZeroDeploy
+        working-directory: medfilter-monitor/public
+        env:
+          ZERODEPLOY_CLAIM_TOKEN: ${{ secrets.ZERODEPLOY_CLAIM_TOKEN }}
+        run: |
+          set -euo pipefail
+          HDR=(-H "Content-Type: text/html" -H "X-Filename: index.html")
+          # Claim-redeploy на Drop API бывает нестабилен; по умолчанию — новый drop,
+          # а при рабочем токене пробуем обновить тот же URL.
+          if [ -n "${ZERODEPLOY_CLAIM_TOKEN:-}" ]; then
+            HDR+=(-H "X-Claim-Token: ${ZERODEPLOY_CLAIM_TOKEN}")
+          fi
+          RESP=$(curl -sS -X POST "https://api.zerodeploy.dev/drop" "${HDR[@]}" --data-binary @index.html)
+          echo "$RESP" | tee "$GITHUB_WORKSPACE/medfilter-monitor/public/zerodeploy.json"
+          python3 - <<'PY'
+          import json, pathlib
+          p = pathlib.Path("zerodeploy.json")
+          data = json.loads(p.read_text())
+          url = (data.get("data") or {}).get("url")
+          print(f"ZeroDeploy URL: {url}")
+          if url:
+              print(f"::notice title=Public showcase::{url}")
+          PY

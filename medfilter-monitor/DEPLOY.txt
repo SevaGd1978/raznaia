@@ -1,0 +1,34 @@
+# Публичный деплой витрины
+
+## Сейчас в интернете
+
+- Витрина: https://old-shape-9199.zerodeploy.app
+- Зеркало (jsDelivr / gh-pages): https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
+
+Агент мониторинга крутится в GitHub Actions каждые 3 часа:
+https://github.com/SevaGd1978/raznaia/actions/workflows/medfilter-monitor.yml
+
+## Сделать витрину постоянной (не истечёт через 72ч)
+
+1. Claim: https://dashboard.zerodeploy.dev/drop-claim?token=zdr_SEE_.secrets/zerodeploy.json
+2. Secret репозитория `ZERODEPLOY_CLAIM_TOKEN` — автообновление того же URL из Actions.
+
+Токен claim хранится локально в `.secrets/zerodeploy.json` (не коммитится).
+
+## Telegram-алерты
+
+Добавьте secrets:
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- опционально `DAMIA_API_KEY`
+
+
+## Доступ (логин на витрине)
+
+Учётки генерируются при `export-site` и пишутся в `.secrets/ACCESS.txt` (не в git).
+
+- **demo** — 72 часа с момента генерации
+- **admin** — постоянный доступ, видит data.json
+
+Актуальные логин/пароль смотрите в `.secrets/ACCESS.txt` после сборки витрины.
