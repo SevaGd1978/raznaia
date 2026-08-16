@@ -2,18 +2,12 @@
 
 Веб-модуль счетов с входом, регистрацией и админ-паролем.
 
-## Windows
+## Доступ из России
 
-Готовый установщик/portable: артефакт `SchetMaster-Windows.zip`  
-(сборка: `cd invoice-app && npm run package:win`).
+Ссылки Cloudflare (`*.trycloudflare.com`) из РФ часто **не открываются**.  
+Актуальные рабочие адреса — в [`invoice-app/ACCESS.md`](invoice-app/ACCESS.md).
 
-На ПК: распаковать → `install.bat` → ярлык «СчётМастер».
-
-## Сейчас онлайн
-
-См. актуальный URL в [`invoice-app/ACCESS.md`](invoice-app/ACCESS.md).
-
-Постоянный бесплатный хостинг (Render):  
+Постоянный хостинг:  
 https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
 
 ```bash
@@ -24,6 +18,5 @@ npm run build
 npm start
 ```
 
-- Пользователи регистрируются сами
 - Админ: логин `admin`, пароль из `ADMIN_PASSWORD`
-- Работы (нормочасы), запчасти, НДС 22%
+- Нормочасы, запчасти, НДС (вкл/выкл + %), номер авто
