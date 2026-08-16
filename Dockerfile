@@ -8,17 +8,18 @@ COPY invoice-app/package.json invoice-app/package-lock.json ./
 RUN npm ci
 COPY invoice-app/ ./
 RUN npm run build \
+  && npx --yes esbuild server/run.ts --bundle --platform=node --format=cjs --outfile=server.cjs --packages=external \
   && mkdir -p /app/data /data \
-  && chown -R node:node /app /data
+  && chown -R node:node /app /data \
+  && npm prune --omit=dev
 
 ENV PORT=3000 \
     COOKIE_SECURE=true \
     DB_PATH=/data/schetmaster.db \
     NODE_ENV=production \
-    NODE_OPTIONS=--max-old-space-size=96
+    NODE_OPTIONS=--max-old-space-size=80
 
 EXPOSE 3000
 
-# Amvera mounts persistent storage at /data; ensure writable then drop privileges
 USER root
-CMD ["sh", "-c", "mkdir -p /data && chown -R node:node /data && exec su -s /bin/sh node -c 'npm start'"]
+CMD ["sh", "-c", "mkdir -p /data && chown -R node:node /data && exec su -s /bin/sh node -c 'node server.cjs'"]
