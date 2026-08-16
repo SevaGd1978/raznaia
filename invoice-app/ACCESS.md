@@ -1,30 +1,22 @@
 # Доступ к СчётМастер
 
-Cloudflare (`*.trycloudflare.com`) из РФ часто не открывается.
+## Новый хостинг (не Cloudflare)
 
-## Другой хостинг сейчас (bore.pub — не Cloudflare)
+**https://805b5213a8a64d.lhr.life**
 
-**http://bore.pub:34666**
-
-Резерв (Pinggy):
+Дополнительно:
+- http://bore.pub:34666
 - https://fjywc-35-167-27-154.free.pinggy.net
-- https://yuepm-35-167-27-154.run.pinggy-free.link
 
 | Роль | Логин | Пароль |
 |---|---|---|
 | Админ | `admin` | `AdminRaznaia2026` |
 | Демо | `demo` | `demo123` |
 
-## Постоянный хостинг (нужен ваш вход через GitHub)
+## Постоянный хостинг
 
-Я не могу завершить деплой без вашего входа в GitHub OAuth.
+Нужен ваш вход через GitHub (я не могу завершить OAuth за вас):
 
-### Render (обычно открывается из РФ)
-https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
-
-### Amvera (российский)
-https://amvera.ru — проект из GitHub, корень репозитория (есть `Dockerfile` + `amvera.yml`)
-
-### GitHub Actions (временный публичный URL)
-Workflow: `Host СчётМастер (temporary public URL)`  
-Actions → Run workflow → смотрите Job Summary со ссылкой.
+1. **Render** → https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia  
+2. **Amvera (РФ)** → https://amvera.ru (Dockerfile уже в корне репозитория)  
+3. **GitHub Actions** → https://github.com/SevaGd1978/raznaia/actions/workflows/host-public.yml (Run workflow)
