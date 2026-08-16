@@ -2,6 +2,13 @@
 
 Веб-модуль счетов с входом, регистрацией и админ-паролем.
 
+## Windows
+
+Готовый установщик/portable: артефакт `SchetMaster-Windows.zip`  
+(сборка: `cd invoice-app && npm run package:win`).
+
+На ПК: распаковать → `install.bat` → ярлык «СчётМастер».
+
 ## Сейчас онлайн
 
 См. актуальный URL в [`invoice-app/ACCESS.md`](invoice-app/ACCESS.md).

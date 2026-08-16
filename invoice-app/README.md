@@ -42,8 +42,16 @@ npm run dev
 - `JWT_SECRET` — секрет подписи сессий
 - `COOKIE_SECURE=true` — только для HTTPS
 
-## Тесты
+## Установка на Windows
+
+Соберите пакет:
 
 ```bash
-npm test
+npm run package:win
 ```
+
+Архив: `dist-windows/SchetMaster-Windows.zip`
+
+На Windows: распакуйте → `install.bat` → ярлык «СчётМастер».
+
+Подробнее: [WINDOWS.md](./WINDOWS.md)
