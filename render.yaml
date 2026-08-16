@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: schetmaster
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: ADMIN_PASSWORD
+        value: AdminRaznaia2026
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /tmp/schetmaster.db

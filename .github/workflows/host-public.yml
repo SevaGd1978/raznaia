@@ -1,0 +1,93 @@
+name: Host СчётМастер (temporary public URL)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - cursor/invoice-module-vat22-8cf2
+
+concurrency:
+  group: schetmaster-public-host
+  cancel-in-progress: true
+
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: invoice-app/package-lock.json
+
+      - name: Install and build
+        working-directory: invoice-app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Start app
+        working-directory: invoice-app
+        env:
+          PORT: "3000"
+          ADMIN_PASSWORD: AdminRaznaia2026
+          JWT_SECRET: schetmaster-gha-secret
+          COOKIE_SECURE: "true"
+          DB_PATH: /tmp/schetmaster.db
+        run: |
+          nohup npm start > /tmp/app.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/api/health; then
+              echo
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "App failed to start" >&2
+          cat /tmp/app.log >&2
+          exit 1
+
+      - name: Open public tunnel (bore + localtunnel)
+        id: tunnel
+        run: |
+          set -e
+          curl -sL -o /tmp/bore.tgz https://github.com/ekzhang/bore/releases/download/v0.5.2/bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz
+          tar -xzf /tmp/bore.tgz -C /tmp
+          chmod +x /tmp/bore
+          /tmp/bore local 3000 --to bore.pub > /tmp/bore.log 2>&1 &
+          sleep 3
+          BORE_URL=$(rg -o 'bore\.pub:[0-9]+' /tmp/bore.log | head -1 || true)
+          if [[ -n "$BORE_URL" ]]; then
+            echo "bore=http://$BORE_URL" >> "$GITHUB_OUTPUT"
+            echo "### Публичный адрес (bore)" >> "$GITHUB_STEP_SUMMARY"
+            echo "http://$BORE_URL" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          npx --yes localtunnel --port 3000 > /tmp/lt.log 2>&1 &
+          for i in $(seq 1 30); do
+            LT_URL=$(rg -o 'https://[a-zA-Z0-9.-]+\.loca\.lt' /tmp/lt.log | head -1 || true)
+            if [[ -n "$LT_URL" ]]; then
+              echo "loca=$LT_URL" >> "$GITHUB_OUTPUT"
+              echo "### Публичный адрес (localtunnel)" >> "$GITHUB_STEP_SUMMARY"
+              echo "$LT_URL" >> "$GITHUB_STEP_SUMMARY"
+              break
+            fi
+            sleep 1
+          done
+
+          echo "Логин: admin / AdminRaznaia2026" >> "$GITHUB_STEP_SUMMARY"
+          echo "Ссылки живут, пока выполняется этот workflow (~5 часов макс)." >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/bore.log || true
+          cat /tmp/lt.log || true
+
+      - name: Keep alive
+        run: |
+          echo "Hosting is up. Keeping runner alive..."
+          # Refresh summary file periodically so URL remains visible
+          while true; do
+            curl -fsS http://127.0.0.1:3000/api/health >/dev/null || exit 1
+            sleep 60
+          done
