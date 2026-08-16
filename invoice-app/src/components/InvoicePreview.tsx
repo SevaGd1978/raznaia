@@ -23,6 +23,11 @@ export function InvoicePreview({ invoice }: InvoicePreviewProps) {
           <p className="brand-mark">СчётМастер</p>
           <h1>Счёт на оплату № {invoice.number || '—'}</h1>
           <p className="preview-date">от {formatDate(invoice.date)}</p>
+          {invoice.vehicleNumber ? (
+            <p className="preview-vehicle">
+              Автомобиль: <strong>{invoice.vehicleNumber}</strong>
+            </p>
+          ) : null}
         </div>
         <div className="preview-badge">{vatLabel(invoice)}</div>
       </header>

@@ -35,6 +35,8 @@ export interface Invoice {
   id: string
   number: string
   date: string
+  /** Госномер ремонтируемого автомобиля */
+  vehicleNumber: string
   seller: PartyInfo
   buyer: PartyInfo
   labor: LaborLine[]
@@ -75,6 +77,7 @@ export function normalizeInvoice(raw: Partial<Invoice> & { id?: string }): Invoi
     labor: Array.isArray(raw.labor) ? raw.labor : [],
     parts: Array.isArray(raw.parts) ? raw.parts : [],
     notes: raw.notes ?? '',
+    vehicleNumber: raw.vehicleNumber ?? '',
     vatEnabled: raw.vatEnabled ?? true,
     vatPercent:
       typeof raw.vatPercent === 'number' && Number.isFinite(raw.vatPercent)
@@ -90,6 +93,7 @@ export function createEmptyInvoice(): Invoice {
     id: createId(),
     number: `СЧ-${stamp.replaceAll('-', '')}-001`,
     date: stamp,
+    vehicleNumber: '',
     seller: {
       name: 'ООО «Сервисный центр»',
       inn: '7700000000',

@@ -108,6 +108,9 @@ function InvoiceWorkspace() {
                   >
                     <span className="draft-number">{draft.number || 'Без номера'}</span>
                     <span className="draft-meta">
+                      {draft.vehicleNumber
+                        ? `${draft.vehicleNumber} · `
+                        : ''}
                       {draft.buyer.name || 'Покупатель не указан'} · {draft.date}
                     </span>
                   </button>
@@ -148,6 +151,17 @@ function InvoiceWorkspace() {
                         type="date"
                         value={invoice.date}
                         onChange={(e) => updateInvoice({ date: e.target.value })}
+                      />
+                    </label>
+                    <label className="meta-vehicle">
+                      <span>Номер авто</span>
+                      <input
+                        value={invoice.vehicleNumber}
+                        onChange={(e) =>
+                          updateInvoice({ vehicleNumber: e.target.value.toUpperCase() })
+                        }
+                        placeholder="А123ВС 77"
+                        autoComplete="off"
                       />
                     </label>
                   </div>

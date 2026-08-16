@@ -277,6 +277,20 @@ button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.meta-vehicle {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 720px) {
+  .meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .meta-vehicle {
+    grid-column: auto;
+  }
+}
+
 .parties-row {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -472,6 +486,16 @@ textarea:focus {
 .preview-date {
   margin: 0.35rem 0 0;
   color: var(--ink-soft);
+}
+
+.preview-vehicle {
+  margin: 0.55rem 0 0;
+  font-size: 1.02rem;
+}
+
+.preview-vehicle strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
 }
 
 .preview-badge {
