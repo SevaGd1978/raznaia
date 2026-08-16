@@ -12,15 +12,14 @@ RUN npm run build \
   && chown -R node:node /app /data \
   && npm prune --omit=dev
 
-ENV PORT=80 \
+ENV PORT=8080 \
     HOST=0.0.0.0 \
     COOKIE_SECURE=true \
     DB_PATH=/data/schetmaster.db \
     NODE_ENV=production \
-    NODE_OPTIONS=--max-old-space-size=384
+    NODE_OPTIONS=--max-old-space-size=512
 
-EXPOSE 80
+EXPOSE 8080
 
 USER root
-# Keep node as PID 1 after fixing /data ownership (avoids su/npx shell teardown).
 CMD ["sh", "-c", "mkdir -p /data && chown -R node:node /data && exec setpriv --reuid=node --regid=node --init-groups -- /usr/local/bin/node --import tsx /app/server/run.ts"]
