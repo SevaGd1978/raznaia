@@ -14,7 +14,8 @@ RUN npm run build \
 ENV PORT=3000 \
     COOKIE_SECURE=true \
     DB_PATH=/data/schetmaster.db \
-    NODE_ENV=production
+    NODE_ENV=production \
+    NODE_OPTIONS=--max-old-space-size=96
 
 EXPOSE 3000
 
