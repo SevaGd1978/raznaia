@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { calcInvoice, vatLabel } from './lib/calc'
+import { exportInvoiceToExcel } from './lib/excel'
 import { useInvoices } from './hooks/useInvoices'
 import { useAuth } from './auth/AuthContext'
 import { AuthScreen } from './auth/AuthScreen'
@@ -83,6 +84,13 @@ function InvoiceWorkspace() {
           </button>
           <button type="button" className="btn btn-primary" onClick={() => window.print()}>
             Печать
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => void exportInvoiceToExcel(invoice)}
+          >
+            Excel
           </button>
           <button type="button" className="btn btn-ghost" onClick={() => void logout()}>
             Выйти

@@ -42,16 +42,18 @@ npm run dev
 - `JWT_SECRET` — секрет подписи сессий
 - `COOKIE_SECURE=true` — только для HTTPS
 
-## Установка на Windows
+## Локально (база + Excel)
 
-Соберите пакет:
+См. подробную инструкцию: [LOCAL.md](./LOCAL.md)
+
+Кратко:
 
 ```bash
-npm run package:win
+cd invoice-app
+cp .env.example .env
+npm install
+npm run build
+npm start
 ```
 
-Архив: `dist-windows/SchetMaster-Windows.zip`
-
-На Windows: распакуйте → `install.bat` → ярлык «СчётМастер».
-
-Подробнее: [WINDOWS.md](./WINDOWS.md)
+Откройте http://localhost:3000 — кнопка **Excel** в шапке выгружает счёт.
