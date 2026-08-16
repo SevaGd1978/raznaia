@@ -1,24 +1,18 @@
 # Доступ к СчётМастер (из России)
 
-Cloudflare (`*.trycloudflare.com`) из РФ часто не открывается.
+## Постоянный адрес (Amvera)
 
-## Рабочая ссылка сейчас
-
-**https://odpnn-52-13-17-46.run.pinggy-free.link**
-
-Резерв: **https://qgtgq-52-13-17-46.free.pinggy.net**
+**https://schetmaster-sevagd1978.amvera.io**
 
 | Роль | Логин | Пароль |
 |---|---|---|
 | Админ | `admin` | `AdminRaznaia2026` |
 | Демо | `demo` | `demo123` |
 
-## Постоянный хостинг (рекомендуется)
+Хостинг: [Amvera](https://amvera.ru), проект `schetmaster`, регион Москва. Данные БД хранятся на диске `/data`.
 
-Чтобы ссылка не пропадала и стабильно открывалась из России — Render:
+## Резерв (временные туннели)
 
-1. https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
-2. Подтвердите Blueprint
-3. Получите адрес `https://schetmaster.onrender.com`
+Если Amvera недоступен, можно снова поднять локальный туннель (Pinggy / localhost.run) — ссылки временные и меняются при каждом запуске.
 
-Пароль админа: `AdminRaznaia2026`
+Пароль админа приложения: `AdminRaznaia2026` (это не пароль от аккаунта Amvera).
