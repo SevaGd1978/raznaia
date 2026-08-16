@@ -1,37 +1,38 @@
-# Доступ к СчётМастер
+# Доступ к СчётМастер (из России)
 
-## Актуальный адрес (сейчас работает)
+Ссылки `*.trycloudflare.com` **из РФ часто не открываются** (блок/фильтр Cloudflare).
 
-**https://interim-moore-secrets-currencies.trycloudflare.com**
+## Рабочая ссылка сейчас (не Cloudflare)
 
-Старый адрес `https://dns-stylish-hide-dishes.trycloudflare.com` больше не действует — это был временный туннель.
+**https://fjywc-35-167-27-154.free.pinggy.net**
 
-Резервный туннель (до ~60 минут):  
-https://hqikt-44-236-205-197.run.pinggy-free.link
+Резерв: **https://yuepm-35-167-27-154.run.pinggy-free.link**
 
-## Учётные записи
+Ещё варианты (пока жив агент):
+- https://yummy-queens-visit.loca.lt
+- http://bore.pub:34666
 
 | Роль | Логин | Пароль |
 |---|---|---|
 | Админ | `admin` | `AdminRaznaia2026` |
 | Демо | `demo` | `demo123` |
-| Новый | вкладка «Регистрация» | свой пароль (≥ 6 символов) |
 
-## Постоянный хостинг (не пропадает)
+## Постоянный хостинг из РФ (рекомендуется)
 
-Бесплатный Render (рекомендуется):
+### Вариант A — Render (обычно открывается без VPN)
 
-1. Смержите PR в `main` (или укажите ветку `cursor/invoice-module-vat22-8cf2` при деплое)
-2. Откройте: https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
-3. Подтвердите Blueprint (`render.yaml`)
-4. После деплоя Render выдаст постоянный URL вида `https://schetmaster.onrender.com`
+1. Откройте https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia  
+2. Войдите / зарегистрируйтесь  
+3. Deploy → получите `https://….onrender.com`
 
-Пароль админа на Render: `AdminRaznaia2026` (из `render.yaml`).
+Пароль админа: `AdminRaznaia2026`
 
-Локально / VPS:
+### Вариант B — российский Amvera
 
-```bash
-cd invoice-app
-cp .env.example .env
-npm install && npm run build && npm start
-```
+1. https://amvera.ru → новый проект из GitHub `SevaGd1978/raznaia`  
+2. Каталог приложения: `invoice-app` (есть `amvera.yml` + Dockerfile)  
+3. Переменные: `ADMIN_PASSWORD`, `JWT_SECRET`, `COOKIE_SECURE=true`, `PORT=3000`
+
+### Вариант C — Timeweb Cloud Apps
+
+Подключите репозиторий, тип Docker, root `invoice-app`.
