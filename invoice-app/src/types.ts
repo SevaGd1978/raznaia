@@ -1,4 +1,7 @@
-export const VAT_RATE = 0.22
+export const DEFAULT_VAT_PERCENT = 22
+
+/** Типовые ставки НДС в РФ */
+export const VAT_PERCENT_OPTIONS = [0, 5, 7, 10, 20, 22] as const
 
 export type LineKind = 'labor' | 'part'
 
@@ -37,6 +40,10 @@ export interface Invoice {
   labor: LaborLine[]
   parts: PartLine[]
   notes: string
+  /** Начислять НДС в итоге */
+  vatEnabled: boolean
+  /** Ставка НДС в процентах, например 22 */
+  vatPercent: number
 }
 
 export interface MoneyBreakdown {
@@ -45,6 +52,8 @@ export interface MoneyBreakdown {
   net: number
   vat: number
   gross: number
+  vatEnabled: boolean
+  vatPercent: number
 }
 
 export function createId(): string {
@@ -53,6 +62,25 @@ export function createId(): string {
 
 export function emptyParty(): PartyInfo {
   return { name: '', inn: '', address: '', phone: '' }
+}
+
+export function normalizeInvoice(raw: Partial<Invoice> & { id?: string }): Invoice {
+  const base = createEmptyInvoice()
+  return {
+    ...base,
+    ...raw,
+    id: raw.id || base.id,
+    seller: { ...base.seller, ...(raw.seller ?? {}) },
+    buyer: { ...base.buyer, ...(raw.buyer ?? {}) },
+    labor: Array.isArray(raw.labor) ? raw.labor : [],
+    parts: Array.isArray(raw.parts) ? raw.parts : [],
+    notes: raw.notes ?? '',
+    vatEnabled: raw.vatEnabled ?? true,
+    vatPercent:
+      typeof raw.vatPercent === 'number' && Number.isFinite(raw.vatPercent)
+        ? raw.vatPercent
+        : DEFAULT_VAT_PERCENT,
+  }
 }
 
 export function createEmptyInvoice(): Invoice {
@@ -72,6 +100,8 @@ export function createEmptyInvoice(): Invoice {
     labor: [],
     parts: [],
     notes: '',
+    vatEnabled: true,
+    vatPercent: DEFAULT_VAT_PERCENT,
   }
 }
 

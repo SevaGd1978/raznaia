@@ -3,6 +3,7 @@ import {
   createEmptyInvoice,
   createLaborLine,
   createPartLine,
+  normalizeInvoice,
   type Invoice,
   type LaborLine,
   type PartLine,
@@ -31,7 +32,9 @@ export function useInvoices(enabled: boolean) {
     fetchInvoices()
       .then((data) => {
         if (cancelled) return
-        const invoices = (data.invoices as Invoice[]) ?? []
+        const invoices = ((data.invoices as Invoice[]) ?? []).map((item) =>
+          normalizeInvoice(item),
+        )
         if (invoices.length === 0) {
           const empty = createEmptyInvoice()
           setDrafts([empty])

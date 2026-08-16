@@ -1,4 +1,4 @@
-import { VAT_RATE, type Invoice } from '../types'
+import type { Invoice } from '../types'
 import {
   calcInvoice,
   formatDate,
@@ -6,6 +6,7 @@ import {
   formatNumber,
   laborAmount,
   partAmount,
+  vatLabel,
 } from '../lib/calc'
 
 interface InvoicePreviewProps {
@@ -14,19 +15,16 @@ interface InvoicePreviewProps {
 
 export function InvoicePreview({ invoice }: InvoicePreviewProps) {
   const totals = calcInvoice(invoice)
-  const vatPercent = Math.round(VAT_RATE * 100)
 
   return (
     <article className="invoice-preview" id="invoice-print">
       <header className="preview-header">
         <div>
           <p className="brand-mark">СчётМастер</p>
-          <h1>
-            Счёт на оплату № {invoice.number || '—'}
-          </h1>
+          <h1>Счёт на оплату № {invoice.number || '—'}</h1>
           <p className="preview-date">от {formatDate(invoice.date)}</p>
         </div>
-        <div className="preview-badge">НДС {vatPercent}%</div>
+        <div className="preview-badge">{vatLabel(invoice)}</div>
       </header>
 
       <div className="preview-parties">
@@ -115,21 +113,28 @@ export function InvoicePreview({ invoice }: InvoicePreviewProps) {
         </div>
         <dl>
           <div>
-            <dt>Работы без НДС</dt>
+            <dt>Работы</dt>
             <dd>{formatMoney(totals.laborNet)}</dd>
           </div>
           <div>
-            <dt>Запчасти без НДС</dt>
+            <dt>Запчасти</dt>
             <dd>{formatMoney(totals.partsNet)}</dd>
           </div>
           <div>
-            <dt>Итого без НДС</dt>
+            <dt>{totals.vatEnabled ? 'Итого без НДС' : 'Итого'}</dt>
             <dd>{formatMoney(totals.net)}</dd>
           </div>
-          <div>
-            <dt>НДС {vatPercent}%</dt>
-            <dd>{formatMoney(totals.vat)}</dd>
-          </div>
+          {totals.vatEnabled ? (
+            <div>
+              <dt>НДС {totals.vatPercent}%</dt>
+              <dd>{formatMoney(totals.vat)}</dd>
+            </div>
+          ) : (
+            <div>
+              <dt>НДС</dt>
+              <dd>Не облагается</dd>
+            </div>
+          )}
           <div className="gross">
             <dt>Всего к оплате</dt>
             <dd>{formatMoney(totals.gross)}</dd>

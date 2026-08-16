@@ -14,7 +14,7 @@ export function PartsSection({ lines, onAdd, onChange, onRemove }: PartsSectionP
       <div className="section-head">
         <div>
           <h2 id="parts-title">Запасные части</h2>
-          <p>Артикул, количество и цена без НДС. НДС 22% начисляется в итоге.</p>
+          <p>Артикул, количество и цена. НДС начисляется в итоге, если включён.</p>
         </div>
         <button type="button" className="btn btn-secondary" onClick={onAdd}>
           + Запчасть

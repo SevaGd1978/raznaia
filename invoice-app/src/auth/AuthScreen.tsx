@@ -37,7 +37,7 @@ export function AuthScreen() {
         <p className="auth-brand">СчётМастер</p>
         <h1>{mode === 'login' ? 'Вход' : 'Регистрация'}</h1>
         <p className="auth-lead">
-          Счета с нормочасами, запчастями и НДС 22%. Доступ по логину и паролю.
+          Счета с нормочасами, запчастями и настраиваемым НДС. Доступ по логину и паролю.
         </p>
 
         <div className="auth-tabs" role="tablist">

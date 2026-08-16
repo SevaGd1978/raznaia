@@ -1,4 +1,4 @@
-import { VAT_RATE, type MoneyBreakdown } from '../types'
+import type { MoneyBreakdown } from '../types'
 import { formatMoney } from '../lib/calc'
 
 interface TotalsPanelProps {
@@ -6,28 +6,33 @@ interface TotalsPanelProps {
 }
 
 export function TotalsPanel({ totals }: TotalsPanelProps) {
-  const vatPercent = Math.round(VAT_RATE * 100)
-
   return (
     <aside className="totals-panel" aria-label="Итоги счёта">
       <h2>Итоги</h2>
       <dl>
         <div>
-          <dt>Работы без НДС</dt>
+          <dt>Работы</dt>
           <dd>{formatMoney(totals.laborNet)}</dd>
         </div>
         <div>
-          <dt>Запчасти без НДС</dt>
+          <dt>Запчасти</dt>
           <dd>{formatMoney(totals.partsNet)}</dd>
         </div>
         <div>
-          <dt>Сумма без НДС</dt>
+          <dt>{totals.vatEnabled ? 'Сумма без НДС' : 'Сумма'}</dt>
           <dd>{formatMoney(totals.net)}</dd>
         </div>
-        <div className="vat-row">
-          <dt>НДС {vatPercent}%</dt>
-          <dd>{formatMoney(totals.vat)}</dd>
-        </div>
+        {totals.vatEnabled ? (
+          <div className="vat-row">
+            <dt>НДС {totals.vatPercent}%</dt>
+            <dd>{formatMoney(totals.vat)}</dd>
+          </div>
+        ) : (
+          <div className="vat-row">
+            <dt>НДС</dt>
+            <dd>Без НДС</dd>
+          </div>
+        )}
         <div className="gross-row">
           <dt>К оплате</dt>
           <dd>{formatMoney(totals.gross)}</dd>

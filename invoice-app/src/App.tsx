@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { calcInvoice } from './lib/calc'
+import { calcInvoice, vatLabel } from './lib/calc'
 import { useInvoices } from './hooks/useInvoices'
 import { useAuth } from './auth/AuthContext'
 import { AuthScreen } from './auth/AuthScreen'
@@ -9,6 +9,7 @@ import { PartsSection } from './components/PartsSection'
 import { TotalsPanel } from './components/TotalsPanel'
 import { InvoicePreview } from './components/InvoicePreview'
 import { AdminPanel } from './components/AdminPanel'
+import { VatSettings } from './components/VatSettings'
 import './App.css'
 
 function InvoiceWorkspace() {
@@ -56,8 +57,8 @@ function InvoiceWorkspace() {
         <div className="brand-block">
           <p className="brand">СчётМастер</p>
           <p className="brand-sub">
-            {user?.displayName} · {user?.role === 'admin' ? 'администратор' : 'пользователь'} · НДС
-            22%
+            {user?.displayName} · {user?.role === 'admin' ? 'администратор' : 'пользователь'} ·{' '}
+            {vatLabel(invoice)}
           </p>
         </div>
         <div className="topbar-actions">
@@ -131,8 +132,7 @@ function InvoiceWorkspace() {
                 <section className="meta-panel no-print">
                   <h1>Счёт на оплату</h1>
                   <p className="lead">
-                    Добавляйте работы в нормочасах и запасные части — НДС 22% считается
-                    автоматически.
+                    Добавляйте работы в нормочасах и запасные части. НДС включается по выбору.
                   </p>
                   <div className="meta-grid">
                     <label>
@@ -152,6 +152,11 @@ function InvoiceWorkspace() {
                     </label>
                   </div>
                 </section>
+
+                <VatSettings
+                  invoice={invoice}
+                  onChange={(patch) => updateInvoice(patch)}
+                />
 
                 <div className="parties-row no-print">
                   <PartyFields
