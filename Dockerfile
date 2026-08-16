@@ -6,7 +6,9 @@ COPY invoice-app/package.json invoice-app/package-lock.json ./
 RUN npm ci
 COPY invoice-app/ ./
 RUN npm run build && mkdir -p /app/data /tmp && chown -R node:node /app
-ENV PORT=3000 COOKIE_SECURE=true DB_PATH=/tmp/schetmaster.db
+ENV PORT=3000 \
+    COOKIE_SECURE=true \
+    DB_PATH=/data/schetmaster.db
 USER node
 EXPOSE 3000
 CMD ["npm", "start"]
