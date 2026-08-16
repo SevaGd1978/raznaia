@@ -1,38 +1,30 @@
-# Доступ к СчётМастер (из России)
+# Доступ к СчётМастер
 
-Ссылки `*.trycloudflare.com` **из РФ часто не открываются** (блок/фильтр Cloudflare).
+Cloudflare (`*.trycloudflare.com`) из РФ часто не открывается.
 
-## Рабочая ссылка сейчас (не Cloudflare)
+## Другой хостинг сейчас (bore.pub — не Cloudflare)
 
-**https://fjywc-35-167-27-154.free.pinggy.net**
+**http://bore.pub:34666**
 
-Резерв: **https://yuepm-35-167-27-154.run.pinggy-free.link**
-
-Ещё варианты (пока жив агент):
-- https://yummy-queens-visit.loca.lt
-- http://bore.pub:34666
+Резерв (Pinggy):
+- https://fjywc-35-167-27-154.free.pinggy.net
+- https://yuepm-35-167-27-154.run.pinggy-free.link
 
 | Роль | Логин | Пароль |
 |---|---|---|
 | Админ | `admin` | `AdminRaznaia2026` |
 | Демо | `demo` | `demo123` |
 
-## Постоянный хостинг из РФ (рекомендуется)
+## Постоянный хостинг (нужен ваш вход через GitHub)
 
-### Вариант A — Render (обычно открывается без VPN)
+Я не могу завершить деплой без вашего входа в GitHub OAuth.
 
-1. Откройте https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia  
-2. Войдите / зарегистрируйтесь  
-3. Deploy → получите `https://….onrender.com`
+### Render (обычно открывается из РФ)
+https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
 
-Пароль админа: `AdminRaznaia2026`
+### Amvera (российский)
+https://amvera.ru — проект из GitHub, корень репозитория (есть `Dockerfile` + `amvera.yml`)
 
-### Вариант B — российский Amvera
-
-1. https://amvera.ru → новый проект из GitHub `SevaGd1978/raznaia`  
-2. Каталог приложения: `invoice-app` (есть `amvera.yml` + Dockerfile)  
-3. Переменные: `ADMIN_PASSWORD`, `JWT_SECRET`, `COOKIE_SECURE=true`, `PORT=3000`
-
-### Вариант C — Timeweb Cloud Apps
-
-Подключите репозиторий, тип Docker, root `invoice-app`.
+### GitHub Actions (временный публичный URL)
+Workflow: `Host СчётМастер (temporary public URL)`  
+Actions → Run workflow → смотрите Job Summary со ссылкой.

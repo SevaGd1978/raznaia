@@ -4,7 +4,6 @@ services:
     runtime: docker
     plan: free
     region: frankfurt
-    rootDir: invoice-app
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
     envVars:
