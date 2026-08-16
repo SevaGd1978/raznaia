@@ -1,23 +1,37 @@
-# Доступ к СчётМастер в интернете
+# Доступ к СчётМастер
 
-Публичный адрес (Cloudflare Tunnel):
+## Актуальный адрес (сейчас работает)
 
-**https://dns-stylish-hide-dishes.trycloudflare.com**
+**https://interim-moore-secrets-currencies.trycloudflare.com**
 
-> Туннель работает, пока запущен cloud-агент / процесс `cloudflared`.
-> Для постоянного хостинга поднимите `npm start` на VPS и укажите свой домен.
+Старый адрес `https://dns-stylish-hide-dishes.trycloudflare.com` больше не действует — это был временный туннель.
+
+Резервный туннель (до ~60 минут):  
+https://hqikt-44-236-205-197.run.pinggy-free.link
 
 ## Учётные записи
 
-### Администратор
-- Логин: `admin`
-- Пароль: `AdminRaznaia2026`
+| Роль | Логин | Пароль |
+|---|---|---|
+| Админ | `admin` | `AdminRaznaia2026` |
+| Демо | `demo` | `demo123` |
+| Новый | вкладка «Регистрация» | свой пароль (≥ 6 символов) |
 
-В админ-панели можно смотреть и удалять пользователей.
+## Постоянный хостинг (не пропадает)
 
-### Регистрация
-На странице входа вкладка **Регистрация** — любой пользователь создаёт свой логин и пароль (от 6 символов). Логин `admin` зарезервирован.
+Бесплатный Render (рекомендуется):
 
-### Демо-пользователь (уже создан)
-- Логин: `demo`
-- Пароль: `demo123`
+1. Смержите PR в `main` (или укажите ветку `cursor/invoice-module-vat22-8cf2` при деплое)
+2. Откройте: https://render.com/deploy?repo=https://github.com/SevaGd1978/raznaia
+3. Подтвердите Blueprint (`render.yaml`)
+4. После деплоя Render выдаст постоянный URL вида `https://schetmaster.onrender.com`
+
+Пароль админа на Render: `AdminRaznaia2026` (из `render.yaml`).
+
+Локально / VPS:
+
+```bash
+cd invoice-app
+cp .env.example .env
+npm install && npm run build && npm start
+```
