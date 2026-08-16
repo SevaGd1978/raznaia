@@ -5,5 +5,5 @@
 ## Агенты
 
 - [`medfilter-monitor`](medfilter-monitor/README.md) — постоянный мониторинг закупок **фильтров для медицинского оборудования** в России.
-  - Витрина: https://solitary-morning-3466.zerodeploy.app
+  - Витрина: https://old-shape-9199.zerodeploy.app
   - Зеркало: https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/

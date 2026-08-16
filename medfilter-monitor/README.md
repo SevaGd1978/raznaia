@@ -18,7 +18,7 @@
 
 Сейчас в интернете:
 
-- https://solitary-morning-3466.zerodeploy.app
+- https://old-shape-9199.zerodeploy.app
 - Зеркало: https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент (cron каждые 3 часа): GitHub Actions workflow `Medfilter procurement monitor`.

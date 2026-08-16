@@ -2,7 +2,7 @@
 
 ## Сейчас в интернете
 
-- Витрина: https://solitary-morning-3466.zerodeploy.app
+- Витрина: https://old-shape-9199.zerodeploy.app
 - Зеркало (jsDelivr / gh-pages): https://cdn.jsdelivr.net/gh/SevaGd1978/raznaia@gh-pages/medfilter/
 
 Агент мониторинга крутится в GitHub Actions каждые 3 часа:
