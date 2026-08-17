@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     jwt_expire_hours: int = 24
     cors_origins: str = "http://localhost:5173"
     app_env: str = "development"
+    static_root: str | None = None
 
     @property
     def cors_origin_list(self) -> list[str]:
