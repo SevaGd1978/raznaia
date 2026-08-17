@@ -13,7 +13,13 @@ import { ReportsPage } from './pages/ReportsPage'
 export default function App() {
   return (
     <StoreProvider>
-      <BrowserRouter>
+      <BrowserRouter
+        basename={
+          import.meta.env.BASE_URL === '/'
+            ? undefined
+            : import.meta.env.BASE_URL.replace(/\/$/, '')
+        }
+      >
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<AppLayout />}>
