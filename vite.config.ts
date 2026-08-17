@@ -2,9 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// GitHub Pages project site: /raznaia/
-// Local/tunnel: set VITE_BASE=/ or leave unset
-const base = process.env.VITE_BASE ?? '/raznaia/'
+// Local / tunnel: /
+// GitHub Pages: VITE_BASE=/raznaia/
+const base = process.env.VITE_BASE ?? '/'
 
 export default defineConfig({
   base,
