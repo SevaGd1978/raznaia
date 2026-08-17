@@ -5,17 +5,33 @@ from decimal import Decimal
 
 from sqlalchemy import func, select
 
+from app.services.auth import hash_password
 from app.database import Base, SessionLocal, engine
-from app.models import Counterparty, CounterpartyType, Order, OrderStatus, OrderStatusHistory, Vehicle
+from app.models import Counterparty, CounterpartyType, Order, OrderStatus, OrderStatusHistory, User, UserRole, Vehicle
 from app.services import generate_order_number
+
+ADMIN_EMAIL = "admin@raznaia.local"
+ADMIN_PASSWORD = "admin123"
 
 
 def seed() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
+        admin = db.scalar(select(User).where(User.email == ADMIN_EMAIL))
+        if not admin:
+            admin = User(
+                email=ADMIN_EMAIL,
+                password_hash=hash_password(ADMIN_PASSWORD),
+                role=UserRole.ADMIN,
+            )
+            db.add(admin)
+            db.flush()
+            print(f"Admin user created: {ADMIN_EMAIL} / {ADMIN_PASSWORD}")
+
         if db.scalar(select(func.count()).select_from(Counterparty)) > 0:
-            print("Database already seeded, skipping.")
+            db.commit()
+            print("Demo data already exists, skipping business seed.")
             return
 
         client = Counterparty(
@@ -63,29 +79,23 @@ def seed() -> None:
         )
         db.add(order)
         db.flush()
-        db.add(
-            OrderStatusHistory(
-                order_id=order.id,
-                from_status=None,
-                to_status=OrderStatus.DRAFT,
-            )
-        )
-        db.add(
-            OrderStatusHistory(
-                order_id=order.id,
-                from_status=OrderStatus.DRAFT,
-                to_status=OrderStatus.CONFIRMED,
-            )
-        )
-        db.add(
-            OrderStatusHistory(
-                order_id=order.id,
-                from_status=OrderStatus.CONFIRMED,
-                to_status=OrderStatus.ASSIGNED,
-            )
+        db.add_all(
+            [
+                OrderStatusHistory(order_id=order.id, from_status=None, to_status=OrderStatus.DRAFT),
+                OrderStatusHistory(
+                    order_id=order.id,
+                    from_status=OrderStatus.DRAFT,
+                    to_status=OrderStatus.CONFIRMED,
+                ),
+                OrderStatusHistory(
+                    order_id=order.id,
+                    from_status=OrderStatus.CONFIRMED,
+                    to_status=OrderStatus.ASSIGNED,
+                ),
+            ]
         )
         db.commit()
-        print("Seed completed: 1 client, 1 carrier, 1 vehicle, 1 order.")
+        print("Seed completed: admin, 1 client, 1 carrier, 1 vehicle, 1 order.")
     finally:
         db.close()
 

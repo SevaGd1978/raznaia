@@ -3,8 +3,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from app.auth import get_current_user
 from app.database import get_db
-from app.models import CounterpartyType
+from app.models import CounterpartyType, User
 from app.schemas import (
     CounterpartyCreate,
     CounterpartyRead,
@@ -19,7 +20,7 @@ from app.services import (
     update_counterparty,
 )
 
-router = APIRouter(prefix="/carriers", tags=["carriers"])
+router = APIRouter(prefix="/carriers", tags=["carriers"], dependencies=[Depends(get_current_user)])
 
 
 @router.get("", response_model=PaginatedCounterparties)

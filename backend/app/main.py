@@ -1,24 +1,15 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth import auth_middleware
 from app.config import settings
-from app.database import Base, engine
-from app.routers import carriers, clients, orders, system, vehicles
-
-
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    Base.metadata.create_all(bind=engine)
-    yield
+from app.routers import auth, carriers, clients, orders, reports, system, vehicles
 
 
 app = FastAPI(
     title="Raznaia TMS",
     description="Transport Management System MVP API",
-    version="0.1.0",
-    lifespan=lifespan,
+    version="0.2.0",
 )
 
 app.add_middleware(
@@ -29,8 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.middleware("http")(auth_middleware)
+
 api_prefix = "/api/v1"
+app.include_router(auth.router, prefix=api_prefix)
 app.include_router(system.router, prefix=api_prefix)
+app.include_router(reports.router, prefix=api_prefix)
 app.include_router(clients.router, prefix=api_prefix)
 app.include_router(carriers.router, prefix=api_prefix)
 app.include_router(vehicles.router, prefix=api_prefix)
@@ -41,6 +36,7 @@ app.include_router(orders.router, prefix=api_prefix)
 def root():
     return {
         "name": "Raznaia TMS",
+        "version": "0.2.0",
         "docs": "/docs",
         "api": "/api/v1/health",
     }

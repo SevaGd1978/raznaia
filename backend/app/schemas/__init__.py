@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from app.models import CounterpartyType, OrderStatus
+from app.models import CounterpartyType, OrderStatus, UserRole
 
 
 class CounterpartyBase(BaseModel):
@@ -150,6 +150,13 @@ class PaginatedOrders(BaseModel):
     offset: int
 
 
+class OrdersReportRead(BaseModel):
+    items: list[OrderRead]
+    total: int
+    from_date: date
+    to_date: date
+
+
 class DashboardStats(BaseModel):
     total_orders: int
     by_status: dict[str, int]
@@ -160,3 +167,23 @@ class DashboardStats(BaseModel):
 class HealthResponse(BaseModel):
     status: str
     app_env: str
+
+
+class LoginRequest(BaseModel):
+    email: str = Field(min_length=1, max_length=255)
+    password: str = Field(min_length=1)
+
+
+class UserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    email: str
+    role: UserRole
+    is_active: bool
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserRead

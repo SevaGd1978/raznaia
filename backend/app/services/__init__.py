@@ -11,6 +11,7 @@ from app.schemas import (
     CounterpartyUpdate,
     DashboardStats,
     OrderCreate,
+    OrderRead,
     OrderUpdate,
     VehicleCreate,
     VehicleUpdate,
@@ -31,6 +32,12 @@ def compute_margin(order: Order) -> Decimal | None:
     if order.client_rate is None or order.carrier_rate is None:
         return None
     return order.client_rate - order.carrier_rate
+
+
+def order_to_read(order: Order) -> OrderRead:
+    data = OrderRead.model_validate(order)
+    data.margin = compute_margin(order)
+    return data
 
 
 def generate_order_number(db: Session) -> str:
@@ -248,3 +255,7 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
         orders_today=orders_today,
         total_margin=total_margin,
     )
+
+
+from app.services.pdf import generate_order_application_pdf  # noqa: E402
+from app.services.reports import list_orders_for_period, orders_report_to_csv  # noqa: E402

@@ -3,8 +3,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from app.auth import get_current_user
 from app.database import get_db
-from app.models import CounterpartyType, OrderStatus
+from app.models import CounterpartyType, User, OrderStatus
 from app.schemas import (
     CounterpartyCreate,
     CounterpartyRead,
@@ -19,7 +20,7 @@ from app.services import (
     update_counterparty,
 )
 
-router = APIRouter(prefix="/clients", tags=["clients"])
+router = APIRouter(prefix="/clients", tags=["clients"], dependencies=[Depends(get_current_user)])
 
 
 def _paginated(items, total: int, limit: int, offset: int) -> PaginatedCounterparties:

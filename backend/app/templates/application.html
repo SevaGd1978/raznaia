@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Заявка {{ order.number }}</title>
+  <style>
+    @page { size: A4; margin: 2cm; }
+    body {
+      font-family: "DejaVu Sans", sans-serif;
+      font-size: 12pt;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 18pt;
+      margin-bottom: 0.25em;
+      color: #0f172a;
+    }
+    .meta {
+      font-size: 10pt;
+      color: #64748b;
+      margin-bottom: 1.5em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5em;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      font-weight: 600;
+      width: 35%;
+    }
+    .section-title {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #334155;
+      margin: 1.25em 0 0.5em;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+    }
+    .notes {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      border-radius: 4px;
+    }
+    .footer {
+      margin-top: 2em;
+      font-size: 9pt;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Заявка на перевозку № {{ order.number }}</h1>
+  <p class="meta">Статус: {{ status_label }} · Дата формирования: {{ generated_at }}</p>
+
+  <p class="section-title">Клиент</p>
+  <table>
+    <tr>
+      <th>Наименование</th>
+      <td>{{ order.client.name }}</td>
+    </tr>
+    {% if order.client.inn %}
+    <tr>
+      <th>ИНН</th>
+      <td>{{ order.client.inn }}</td>
+    </tr>
+    {% endif %}
+    {% if order.client.phone %}
+    <tr>
+      <th>Телефон</th>
+      <td>{{ order.client.phone }}</td>
+    </tr>
+    {% endif %}
+    {% if order.client.email %}
+    <tr>
+      <th>Email</th>
+      <td>{{ order.client.email }}</td>
+    </tr>
+    {% endif %}
+  </table>
+
+  <p class="section-title">Маршрут и сроки</p>
+  <table>
+    <tr>
+      <th>Пункт отправления</th>
+      <td>{{ order.origin }}</td>
+    </tr>
+    <tr>
+      <th>Пункт назначения</th>
+      <td>{{ order.destination }}</td>
+    </tr>
+    <tr>
+      <th>Дата погрузки</th>
+      <td>{{ order.load_date }}</td>
+    </tr>
+    <tr>
+      <th>Дата выгрузки</th>
+      <td>{{ order.unload_date }}</td>
+    </tr>
+  </table>
+
+  <p class="section-title">Груз</p>
+  <table>
+    <tr>
+      <th>Масса, кг</th>
+      <td>{{ order.cargo_weight_kg if order.cargo_weight_kg is not none else '—' }}</td>
+    </tr>
+    <tr>
+      <th>Объём, м³</th>
+      <td>{{ order.cargo_volume_m3 if order.cargo_volume_m3 is not none else '—' }}</td>
+    </tr>
+  </table>
+
+  <p class="section-title">Финансы</p>
+  <table>
+    <tr>
+      <th>Ставка клиента</th>
+      <td>{{ client_rate }} ₽</td>
+    </tr>
+    <tr>
+      <th>Ставка перевозчика</th>
+      <td>{{ carrier_rate }} ₽</td>
+    </tr>
+    <tr>
+      <th>Маржа</th>
+      <td>{{ margin }} ₽</td>
+    </tr>
+  </table>
+
+  {% if order.carrier %}
+  <p class="section-title">Перевозчик</p>
+  <table>
+    <tr>
+      <th>Наименование</th>
+      <td>{{ order.carrier.name }}</td>
+    </tr>
+    {% if order.carrier.inn %}
+    <tr>
+      <th>ИНН</th>
+      <td>{{ order.carrier.inn }}</td>
+    </tr>
+    {% endif %}
+    {% if order.vehicle %}
+    <tr>
+      <th>ТС</th>
+      <td>
+        {{ order.vehicle.plate_number }}
+        {% if order.vehicle.brand %} ({{ order.vehicle.brand }}){% endif %}
+      </td>
+    </tr>
+    {% endif %}
+  </table>
+  {% endif %}
+
+  {% if order.notes %}
+  <p class="section-title">Примечание</p>
+  <div class="notes">{{ order.notes }}</div>
+  {% endif %}
+
+  <p class="footer">Raznaia TMS · Заявка {{ order.number }}</p>
+</body>
+</html>
