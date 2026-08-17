@@ -6,7 +6,7 @@ from decimal import Decimal
 from sqlalchemy import func, select
 
 from app.services.auth import hash_password
-from app.database import Base, SessionLocal, engine
+from app.database import SessionLocal
 from app.models import Counterparty, CounterpartyType, Order, OrderStatus, OrderStatusHistory, User, UserRole, Vehicle
 from app.services import generate_order_number
 
@@ -15,7 +15,6 @@ ADMIN_PASSWORD = "admin123"
 
 
 def seed() -> None:
-    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         admin = db.scalar(select(User).where(User.email == ADMIN_EMAIL))

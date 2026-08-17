@@ -6,6 +6,7 @@ export interface AuthUser {
   id: string
   email: string
   role: string
+  is_active?: boolean
 }
 
 interface AuthContextValue {
