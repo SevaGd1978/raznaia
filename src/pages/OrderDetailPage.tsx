@@ -141,9 +141,19 @@ export function OrderDetailPage() {
             <ul className="mt-4 space-y-3">
               {docs.length === 0 && <li className="text-sm text-mist">Пока нет документов</li>}
               {docs.map((doc) => (
-                <li key={doc.id} className="flex items-center justify-between text-sm">
-                  <span>{doc.title}</span>
-                  <span className="text-xs text-mist">{doc.status}</span>
+                <li key={doc.id} className="flex items-center justify-between gap-3 text-sm">
+                  <Link
+                    to={`/app/documents/${doc.id}`}
+                    className="font-medium text-ink underline-offset-2 hover:text-teal hover:underline"
+                  >
+                    {doc.title}
+                  </Link>
+                  <Link
+                    to={`/app/documents/${doc.id}?print=1`}
+                    className="shrink-0 text-xs text-teal hover:underline"
+                  >
+                    Печать
+                  </Link>
                 </li>
               ))}
             </ul>

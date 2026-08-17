@@ -31,7 +31,7 @@ export function AppLayout() {
   return (
     <div className="min-h-screen bg-paper text-ink lg:grid lg:grid-cols-[240px_1fr]">
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-[240px] border-r border-fog/70 bg-asphalt text-fog transition-transform lg:static lg:translate-x-0 ${
+        className={`no-print fixed inset-y-0 left-0 z-40 w-[240px] border-r border-fog/70 bg-asphalt text-fog transition-transform lg:static lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -99,7 +99,7 @@ export function AppLayout() {
       )}
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-fog/80 bg-paper/90 px-4 backdrop-blur md:px-8">
+        <header className="no-print sticky top-0 z-20 flex h-16 items-center justify-between border-b border-fog/80 bg-paper/90 px-4 backdrop-blur md:px-8">
           <div className="flex items-center gap-3">
             <button
               type="button"

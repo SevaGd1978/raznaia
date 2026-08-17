@@ -8,6 +8,7 @@ import { OrderDetailPage } from './pages/OrderDetailPage'
 import { ClientsPage } from './pages/ClientsPage'
 import { CarriersPage } from './pages/CarriersPage'
 import { DocumentsPage } from './pages/DocumentsPage'
+import { DocumentDetailPage } from './pages/DocumentDetailPage'
 import { ReportsPage } from './pages/ReportsPage'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="clients" element={<ClientsPage />} />
             <Route path="carriers" element={<CarriersPage />} />
             <Route path="documents" element={<DocumentsPage />} />
+            <Route path="documents/:id" element={<DocumentDetailPage />} />
             <Route path="reports" element={<ReportsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

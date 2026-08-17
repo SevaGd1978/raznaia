@@ -134,3 +134,33 @@ textarea {
   background: #fde8e8;
   color: #9b2c2c;
 }
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  aside,
+  header.sticky,
+  .lg\:grid > aside {
+    display: none !important;
+  }
+
+  .lg\:grid {
+    display: block !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  #printable-document {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
