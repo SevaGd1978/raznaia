@@ -1,86 +1,70 @@
 # Raznaia TMS
 
-Система автоматизации транспортной логистики (MVP). Аналог TransTrade для учебного и продуктового прототипирования.
+Полноценная web-система автоматизации транспортной логистики (MVP v0.2).
+
+## Возможности
+
+- JWT-авторизация и защищённый API
+- Дашборд: статистика, маржа, заказы на сегодня
+- Заказы: CRUD, workflow статусов, история, назначение перевозчика/ТС
+- Справочники: клиенты, перевозчики, транспорт
+- PDF-заявка (WeasyPrint)
+- Отчёты за период (JSON + CSV)
+- Docker dev + production, Alembic, CI
 
 ## Документация
 
 | Файл | Описание |
 |------|----------|
-| [CHECKLIST-razrabotka-programmy.md](CHECKLIST-razrabotka-programmy.md) | Полный чек-лист разработки (14 этапов) |
+| [docs/USER-GUIDE.md](docs/USER-GUIDE.md) | Руководство пользователя |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Production-деплой |
 | [docs/01-CONCEPT.md](docs/01-CONCEPT.md) | Концепция продукта |
-| [docs/02-USER-STORIES.md](docs/02-USER-STORIES.md) | User stories MVP |
-| [docs/03-MVP-PLAN-6-WEEKS.md](docs/03-MVP-PLAN-6-WEEKS.md) | План на 6 недель |
-| [docs/04-INTEGRATIONS-CHECKLIST.md](docs/04-INTEGRATIONS-CHECKLIST.md) | Чек-лист интеграций |
-| [docs/05-TECH-SPEC.md](docs/05-TECH-SPEC.md) | Техническое ТЗ |
+| [docs/03-MVP-PLAN-6-WEEKS.md](docs/03-MVP-PLAN-6-WEEKS.md) | План разработки |
+| [CHECKLIST-razrabotka-programmy.md](CHECKLIST-razrabotka-programmy.md) | Полный чек-лист (14 этапов) |
 
-## Быстрый старт
-
-### Docker (рекомендуется)
+## Быстрый старт (разработка)
 
 ```bash
 docker compose up --build
-```
-
-- **UI:** http://localhost:5173
-- **API:** http://localhost:8000
-- **Swagger:** http://localhost:8000/docs
-
-Загрузить демо-данные:
-
-```bash
 docker compose exec backend python seed.py
 ```
 
-### Локально
+| Сервис | URL |
+|--------|-----|
+| **UI** | http://localhost:5173 |
+| **API** | http://localhost:8000/docs |
+| **Логин** | admin@raznaia.local / admin123 |
 
-**Backend:**
-
-```bash
-cd backend
-pip install -r requirements.txt
-export DATABASE_URL=postgresql+psycopg2://raznaia:raznaia@localhost:5432/raznaia
-uvicorn app.main:app --reload
-```
-
-**Frontend:**
+## Production
 
 ```bash
-cd frontend
-npm install
-npm run dev
+cp .env.prod.example .env
+# отредактируйте POSTGRES_PASSWORD и SECRET_KEY
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml exec backend python seed.py
 ```
 
-Frontend проксирует `/api` на `http://localhost:8000`.
+Подробнее: [docs/DEPLOY.md](docs/DEPLOY.md)
 
-### Тесты backend
+## Тесты
 
 ```bash
-cd backend
-python3 -m pytest -v
+cd backend && python3 -m pytest -v
+cd frontend && npm run build
 ```
 
-### Сборка frontend
-
-```bash
-cd frontend
-npm run build
-```
-
-## Возможности MVP
-
-- Дашборд: заказы по статусам, маржа, заказы на сегодня
-- Заказы: список, фильтр, создание, редактирование, смена статуса
-- Справочники: клиенты, перевозчики, транспорт
-- Заявка: HTML/PDF preview по заказу
-
-## Статус проекта
-
-- [x] Этап 0–1: концепция, user stories, ТЗ
-- [x] Неделя 1–2: backend API + Docker
-- [x] Неделя 3: React frontend
-- [ ] Неделя 5: JWT auth
-- [ ] Неделя 6: релиз v1.0
+CI: `.github/workflows/ci.yml`
 
 ## Стек
 
-Python 3.12 · FastAPI · PostgreSQL · React · TypeScript · Tailwind · Docker
+Python 3.12 · FastAPI · PostgreSQL · Alembic · React · TypeScript · Tailwind · Docker
+
+## Статус v0.2
+
+- [x] Backend API + миграции
+- [x] JWT auth
+- [x] React UI + login
+- [x] PDF + отчёты
+- [x] Production Docker + CI
+- [ ] RBAC (несколько ролей)
+- [ ] Интеграции (1С, ЭДО, АТИ)

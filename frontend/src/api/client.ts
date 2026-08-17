@@ -10,8 +10,25 @@ import type {
   Vehicle,
   VehicleInput,
 } from '../types'
+import { authHeaders, clearToken } from '../auth/storage'
 
 const API_BASE = '/api/v1'
+
+export interface LoginResponse {
+  access_token: string
+  token_type: string
+  user: {
+    id: string
+    email: string
+    role: string
+  }
+}
+
+export interface AuthUser {
+  id: string
+  email: string
+  role: string
+}
 
 class ApiError extends Error {
   status: number
@@ -23,14 +40,24 @@ class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}, auth = true): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string> | undefined),
+  }
+
+  if (auth) {
+    Object.assign(headers, authHeaders())
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers ?? {}),
-    },
     ...options,
+    headers,
   })
+
+  if (response.status === 401 && auth) {
+    clearToken()
+  }
 
   if (!response.ok) {
     let detail = response.statusText
@@ -51,7 +78,20 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  health: () => request<{ status: string }>('/health'),
+  login: (email: string, password: string) =>
+    request<LoginResponse>(
+      '/auth/login',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      },
+      false,
+    ),
+
+  me: () => request<AuthUser>('/auth/me'),
+
+  health: () => request<{ status: string }>('/health', {}, false),
+
   dashboard: () => request<DashboardStats>('/dashboard'),
 
   getClients: (params?: { search?: string; limit?: number; offset?: number }) => {
@@ -115,7 +155,44 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     }),
-  getApplicationUrl: (id: string) => `${API_BASE}/orders/${id}/application.pdf`,
+
+  getOrdersReport: (params: { from: string; to: string }) => {
+    const query = new URLSearchParams({ from: params.from, to: params.to, format: 'json' })
+    return request<Paginated<Order>>(`/reports/orders?${query}`)
+  },
+
+  downloadApplication: async (id: string, filename?: string) => {
+    const response = await fetch(`${API_BASE}/orders/${id}/application.pdf`, {
+      headers: authHeaders(),
+    })
+    if (!response.ok) {
+      throw new ApiError('Не удалось скачать заявку', response.status)
+    }
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = filename ?? `application-${id}.pdf`
+    anchor.click()
+    URL.revokeObjectURL(url)
+  },
+
+  downloadOrdersReportCsv: async (from: string, to: string) => {
+    const query = new URLSearchParams({ from, to, format: 'csv' })
+    const response = await fetch(`${API_BASE}/reports/orders?${query}`, {
+      headers: authHeaders(),
+    })
+    if (!response.ok) {
+      throw new ApiError('Не удалось скачать отчёт', response.status)
+    }
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `orders-${from}-${to}.csv`
+    anchor.click()
+    URL.revokeObjectURL(url)
+  },
 }
 
 export { ApiError }

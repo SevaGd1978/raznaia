@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 
 const navItems = [
   { to: '/', label: 'Дашборд', end: true },
@@ -6,25 +7,35 @@ const navItems = [
   { to: '/clients', label: 'Клиенты' },
   { to: '/carriers', label: 'Перевозчики' },
   { to: '/vehicles', label: 'Транспорт' },
+  { to: '/reports', label: 'Отчёты' },
 ]
 
 export function Layout() {
+  const { user, logout } = useAuth()
+
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">Raznaia TMS</p>
             <h1 className="text-lg font-bold text-slate-900">Управление перевозками</h1>
           </div>
-          <a
-            href="http://localhost:8000/docs"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 sm:inline-block"
-          >
-            API Docs
-          </a>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <div className="hidden text-right sm:block">
+                <p className="text-sm font-medium text-slate-900">{user.email}</p>
+                <p className="text-xs text-slate-500">{user.role}</p>
+              </div>
+            ) : null}
+            <button
+              type="button"
+              onClick={logout}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+            >
+              Выйти
+            </button>
+          </div>
         </div>
       </header>
 

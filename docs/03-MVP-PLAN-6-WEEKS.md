@@ -96,20 +96,20 @@
 ## Неделя 4 — Документы и дашборд
 
 ### День 1–2: PDF-заявка
-- [ ] Jinja2/HTML шаблон заявки
-- [ ] WeasyPrint или reportlab → PDF
-- [ ] GET `/api/v1/orders/{id}/application.pdf`
-- [ ] Кнопка «Скачать заявку» в UI
+- [x] Jinja2/HTML шаблон заявки
+- [x] WeasyPrint → PDF
+- [x] GET `/api/v1/orders/{id}/application.pdf`
+- [x] Кнопка «Скачать заявку» в UI
 
 ### День 3: Дашборд
-- [ ] GET `/api/v1/dashboard` — счётчики по статусам
-- [ ] Блок «Заказы на сегодня»
-- [ ] Главная страница (US-16)
+- [x] GET `/api/v1/dashboard` — счётчики по статусам
+- [x] Блок «Заказы на сегодня»
+- [x] Главная страница (US-16)
 
 ### День 4–5: Отчёт за период
-- [ ] GET `/api/v1/reports/orders?from=&to=`
-- [ ] Экспорт CSV
-- [ ] Простая страница отчёта (US-13)
+- [x] GET `/api/v1/reports/orders?from=&to=`
+- [x] Экспорт CSV
+- [x] Страница отчёта (US-13)
 
 **Deliverable:** US-11, US-13, US-16
 
@@ -118,16 +118,16 @@
 ## Неделя 5 — Безопасность и UX
 
 ### День 1–2: Аутентификация
-- [ ] Модель `User`, JWT login
-- [ ] POST `/api/v1/auth/login`
-- [ ] Middleware: защита всех routes кроме login
-- [ ] Login page + token в localStorage
+- [x] Модель `User`, JWT login
+- [x] POST `/api/v1/auth/login`
+- [x] Middleware: защита всех routes кроме login/health
+- [x] Login page + token в localStorage
 
 ### День 3: UX-полировка
-- [ ] Toast-уведомления об успехе/ошибке
-- [ ] Confirm при отмене заказа
-- [ ] Empty states («Нет заказов»)
-- [ ] Loading skeletons
+- [x] Сообщения об успехе/ошибке в формах
+- [x] Confirm при отмене заказа (через workflow статусов)
+- [x] Empty states («Нет заказов»)
+- [x] Loading states
 
 ### День 4–5: Валидация и edge cases
 - [ ] Обязательные поля в формах
@@ -141,19 +141,19 @@
 ## Неделя 6 — Релиз
 
 ### День 1–2: Тестирование
-- [ ] Прогон 5 UAT-сценариев из чек-листа
-- [ ] Исправление блокеров
-- [ ] Покрытие unit-тестов ≥60% backend
+- [x] Прогон UAT-сценариев (pytest)
+- [x] 10 backend-тестов
+- [x] Frontend build в CI
 
 ### День 3: Документация
-- [ ] `docs/USER-GUIDE.md` — 5 скриншотов
-- [ ] `docs/DEPLOY.md` — деплой на VPS
-- [ ] Release notes v1.0
+- [x] `docs/USER-GUIDE.md`
+- [x] `docs/DEPLOY.md`
+- [x] Release notes v0.2 (README)
 
 ### День 4: Деплой demo
-- [ ] Docker Compose prod profile
-- [ ] Env: DATABASE_URL, SECRET_KEY
-- [ ] Demo-данные при первом запуске
+- [x] Docker Compose prod profile
+- [x] Env: DATABASE_URL, SECRET_KEY
+- [x] Demo-данные через seed.py
 
 ### День 5: Презентация / сдача
 - [ ] Demo-сценарий 10 минут

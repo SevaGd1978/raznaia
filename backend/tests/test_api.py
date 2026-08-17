@@ -205,3 +205,38 @@ def test_orders_report_csv(client, auth_headers):
     assert response.status_code == 200
     assert "text/csv" in response.headers["content-type"]
     assert "number" in response.text
+
+
+def test_orders_report_json(client, auth_headers):
+    client_id = client.post(
+        "/api/v1/clients",
+        json={"name": "Report Client"},
+        headers=auth_headers,
+    ).json()["id"]
+    today = date.today()
+    client.post(
+        "/api/v1/orders",
+        json={
+            "client_id": client_id,
+            "origin": "Moscow",
+            "destination": "SPB",
+            "load_date": today.isoformat(),
+            "unload_date": today.isoformat(),
+            "client_rate": "30000.00",
+            "carrier_rate": "25000.00",
+        },
+        headers=auth_headers,
+    )
+
+    response = client.get(
+        f"/api/v1/reports/orders?from={today.isoformat()}&to={today.isoformat()}&format=json",
+        headers=auth_headers,
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] == 1
+    assert len(data["items"]) == 1
+    assert data["items"][0]["origin"] == "Moscow"
+    assert data["items"][0]["margin"] == "5000.00"
+    assert data["from_date"] == today.isoformat()
+    assert data["to_date"] == today.isoformat()

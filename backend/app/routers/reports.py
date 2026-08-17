@@ -1,28 +1,22 @@
 from datetime import date
 from enum import Enum
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
+from app.auth import get_current_user
 from app.database import get_db
+from app.models import User
 from app.schemas import OrdersReportRead
-from app.services import list_orders_for_period, orders_report_to_csv
-from app.services import compute_margin
-from app.schemas import OrderRead
+from app.services import list_orders_for_period, order_to_read, orders_report_to_csv
 
-router = APIRouter(prefix="/reports", tags=["reports"])
+router = APIRouter(prefix="/reports", tags=["reports"], dependencies=[Depends(get_current_user)])
 
 
 class ReportFormat(str, Enum):
     JSON = "json"
     CSV = "csv"
-
-
-def _order_to_read(order) -> OrderRead:
-    data = OrderRead.model_validate(order)
-    data.margin = compute_margin(order)
-    return data
 
 
 @router.get("/orders")
@@ -31,10 +25,9 @@ def get_orders_report(
     to_date: date = Query(alias="to"),
     format: ReportFormat = ReportFormat.JSON,
     db: Session = Depends(get_db),
+    _: User = Depends(get_current_user),
 ):
     if to_date < from_date:
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=422, detail="to must be on or after from")
 
     orders = list_orders_for_period(db, from_date, to_date)
@@ -52,7 +45,7 @@ def get_orders_report(
             },
         )
 
-    items = [_order_to_read(order) for order in orders]
+    items = [order_to_read(order) for order in orders]
     return OrdersReportRead(
         items=items,
         total=len(items),

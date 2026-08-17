@@ -166,14 +166,17 @@ export function OrderDetailPage() {
           <StatusBadge status={order.status} />
           <span className="text-sm text-slate-600">Маржа: {formatMoney(order.margin)}</span>
           <span className="text-sm text-slate-600">Обновлён: {formatDate(order.updated_at)}</span>
-          <a
-            href={api.getApplicationUrl(order.id)}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
+            onClick={() =>
+              api
+                .downloadApplication(order.id, `application-${order.number}.pdf`)
+                .catch((err) => setError(err.message))
+            }
             className="ml-auto rounded-lg border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50"
           >
-            Скачать заявку
-          </a>
+            Скачать заявку (PDF)
+          </button>
         </div>
       ) : null}
 
