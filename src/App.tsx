@@ -10,6 +10,7 @@ import { CarriersPage } from './pages/CarriersPage'
 import { DocumentsPage } from './pages/DocumentsPage'
 import { DocumentDetailPage } from './pages/DocumentDetailPage'
 import { ReportsPage } from './pages/ReportsPage'
+import { SlidingSupportCalculatorPage } from './pages/SlidingSupportCalculatorPage'
 
 export default function App() {
   return (
@@ -22,7 +23,8 @@ export default function App() {
         }
       >
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<SlidingSupportCalculatorPage />} />
+          <Route path="/cargodesk" element={<LandingPage />} />
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="orders" element={<OrdersPage />} />
