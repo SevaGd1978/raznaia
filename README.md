@@ -21,9 +21,9 @@
 docker compose up --build
 ```
 
-- API: http://localhost:8000
-- Swagger: http://localhost:8000/docs
-- Health: http://localhost:8000/api/v1/health
+- **UI:** http://localhost:5173
+- **API:** http://localhost:8000
+- **Swagger:** http://localhost:8000/docs
 
 Загрузить демо-данные:
 
@@ -31,7 +31,9 @@ docker compose up --build
 docker compose exec backend python seed.py
 ```
 
-### Локально (без Docker)
+### Локально
+
+**Backend:**
 
 ```bash
 cd backend
@@ -40,35 +42,45 @@ export DATABASE_URL=postgresql+psycopg2://raznaia:raznaia@localhost:5432/raznaia
 uvicorn app.main:app --reload
 ```
 
-### Тесты
+**Frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend проксирует `/api` на `http://localhost:8000`.
+
+### Тесты backend
 
 ```bash
 cd backend
-pip install -r requirements.txt
-pytest -v
+python3 -m pytest -v
 ```
 
-## API (MVP)
+### Сборка frontend
 
-| Endpoint | Описание |
-|----------|----------|
-| `GET /api/v1/clients` | Список клиентов |
-| `GET /api/v1/carriers` | Список перевозчиков |
-| `GET /api/v1/vehicles` | Список ТС |
-| `GET /api/v1/orders` | Список заказов |
-| `POST /api/v1/orders` | Создать заказ |
-| `PATCH /api/v1/orders/{id}/status` | Сменить статус |
-| `GET /api/v1/dashboard` | Статистика |
-| `GET /api/v1/orders/{id}/application.pdf` | Заявка (HTML, PDF в v1.1) |
+```bash
+cd frontend
+npm run build
+```
+
+## Возможности MVP
+
+- Дашборд: заказы по статусам, маржа, заказы на сегодня
+- Заказы: список, фильтр, создание, редактирование, смена статуса
+- Справочники: клиенты, перевозчики, транспорт
+- Заявка: HTML/PDF preview по заказу
 
 ## Статус проекта
 
 - [x] Этап 0–1: концепция, user stories, ТЗ
-- [x] Неделя 1 (частично): backend API + Docker
-- [ ] Неделя 3: React frontend
+- [x] Неделя 1–2: backend API + Docker
+- [x] Неделя 3: React frontend
 - [ ] Неделя 5: JWT auth
 - [ ] Неделя 6: релиз v1.0
 
 ## Стек
 
-Python 3.12 · FastAPI · PostgreSQL · React (planned) · Docker
+Python 3.12 · FastAPI · PostgreSQL · React · TypeScript · Tailwind · Docker

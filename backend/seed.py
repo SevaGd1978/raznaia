@@ -3,6 +3,8 @@
 from datetime import date, timedelta
 from decimal import Decimal
 
+from sqlalchemy import func, select
+
 from app.database import Base, SessionLocal, engine
 from app.models import Counterparty, CounterpartyType, Order, OrderStatus, OrderStatusHistory, Vehicle
 from app.services import generate_order_number
@@ -12,7 +14,7 @@ def seed() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        if db.query(Counterparty).count() > 0:
+        if db.scalar(select(func.count()).select_from(Counterparty)) > 0:
             print("Database already seeded, skipping.")
             return
 
